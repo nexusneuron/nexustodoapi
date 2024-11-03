@@ -73,9 +73,38 @@ namespace TodoAPI.Services
                 Done = false,
             };
 
+	    var todoItem4 = new TodoItem
+            {
+                ID = "4cfa6f80-3671-4911-aabe-63cc442c1ecf",
+                Name = "4 Publish apps",
+                Notes = "All app stores",
+                Done = false,
+            };
+
+	    var todoItem5 = new TodoItem
+            {
+                ID = "5cfa6f80-3671-4911-aabe-63cc442c1ecf",
+                Name = "5 Publish apps",
+                Notes = "All app stores",
+                Done = false,
+            };
+
+
+	    var todoItem6 = new TodoItem
+            {
+                ID = "6cfa6f80-3671-4911-aabe-63cc442c1ecf",
+                Name = "6 Publish apps",
+                Notes = "All app stores",
+                Done = false,
+            };
+
             _todoList.Add(todoItem1);
             _todoList.Add(todoItem2);
             _todoList.Add(todoItem3);
+            _todoList.Add(todoItem4);
+            _todoList.Add(todoItem5);
+            _todoList.Add(todoItem6);
+
         }
     }
 }
