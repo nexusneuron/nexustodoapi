@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v4
       
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag nexustodoapi:$(date +%s)
+      run: docker build . --file TodoAPI/Dockerfile --tag nexustodoapi:$(date +%s)
       
     -
         name: Login to Docker Hub
