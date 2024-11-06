@@ -31,7 +31,7 @@ jobs:
       run: docker tag nexustodoapi ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi
 
     - name: Tag the Docker image nexustodoapi_two
-      run: docker tag nexustodoapi ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi_two
+      run: docker tag nexustodoapi_two ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi_two
 
     - name: Push the Docker image nexustodoapi
       run: docker push ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi:latest
