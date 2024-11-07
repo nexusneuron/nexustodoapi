@@ -1,4 +1,4 @@
-﻿ARG git_url_csproj=https://github.com/nexusneuron/nexustodoapi.git#master:TodoAPI/TodoAPI.csproj
+﻿ARG git_url_csproj=https://github.com/nexusneuron/nexustodoapi.git#master:
 
 #FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809ltsc2022 as base
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-ltsc2022 as base
@@ -12,12 +12,12 @@ COPY . /src
 WORKDIR /src
 #RUN ls
 #RUN dotnet build "TodoAPI/TodoAPI.csproj" -c Release -o /app/build
-RUN dotnet build %git_url_csproj% -c Release -o /app/build
+RUN dotnet build "%git_url_csproj%TodoAPI/TodoAPI.csproj" -c Release -o /app/build
 
 
 FROM build AS publish
 #RUN dotnet publish "TodoAPI/TodoAPI.csproj" -c Release -o /app/publish
-RUN dotnet publish %git_url_csproj% -c Release -o /app/publish
+RUN dotnet publish "%git_url_csproj%TodoAPI/TodoAPI.csproj" -c Release -o /app/publish
 
 
 FROM base AS final
