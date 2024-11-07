@@ -11,7 +11,7 @@ services:
       - "5001:8081"
 
   todoapi_two:
-    image: ${DOCKER_REGISTRY-}todoapitwo
+    image: ${DOCKER_REGISTRY-}todoapi_two
     build:
       context: .
       dockerfile: TodoAPI_Two\Dockerfile
