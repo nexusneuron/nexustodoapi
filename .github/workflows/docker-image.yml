@@ -40,7 +40,8 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
-        script: ssh ${{ secrets.USER_IP }} hostname
+        script: |
+          powershell.exe
           
 
       #env: 
