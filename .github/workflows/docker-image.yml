@@ -32,9 +32,9 @@ jobs:
         #NAME: production
         #USER: ${{ secrets.SSH_USER }} # admin
       #run: | 
-      #  ssh ${{ secrets.USER_IP }} 'hostname'
+      #  ssh ${{ secrets.USER_IP }} 'hostname'  @v1.1.0
     
-      uses: appleboy/ssh-action@v1.1.0
+      uses: appleboy/ssh-action@1a8b3784eaa665f677fa114edd5683bb6a6bfaa8
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
