@@ -22,7 +22,7 @@ jobs:
         SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
         NAME: production
         USER: ${{ secrets.SSH_USER }} # admin
-    - run: ssh hostname
+    - run: hostname
     
       #uses: appleboy/ssh-action@v1.1.0
       #with:
