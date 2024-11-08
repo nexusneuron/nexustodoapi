@@ -21,7 +21,7 @@ jobs:
          HOST: ${{ secrets.SSH_HOST }}
          USER: ${{ secrets.SSH_USER }}
       run: |
-        echo "$PRIVATE_KEY" > private_key.pem # Write the private key to a file
+        echo "$PRIVATE_KEY" > private_key.pem #Write the private key to a file
         chmod 600 private_key.pem # Set the appropriate permissions for the key file
 
         ssh -i private_key.pem "$USER@$HOST" \
