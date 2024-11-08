@@ -33,7 +33,7 @@ jobs:
         #USER: ${{ secrets.SSH_USER }} # admin
       run: | 
         hostname
-        ssh ${{ secrets.SSH_USER }} hostname
+        ssh ${{ secrets.USER_IP }} hostname
     
       #uses: appleboy/ssh-action@v1.1.0
       #with:
