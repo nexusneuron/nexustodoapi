@@ -14,15 +14,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Setup SSH
+      run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa.pub
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
       
     - name: Deploy using docker-compose
-      uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
-      with:
-        ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.8
-        SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
-        NAME: production
-        USER: ${{ secrets.SSH_USER }} # admin
-    - run: hostname
+      #uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
+      #with:
+        #ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.8
+        #SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
+        #NAME: production
+        #USER: ${{ secrets.SSH_USER }} # admin
+    - run: | 
+        hostname
+        ssh ${{ secrets.SSH_USER }} "hostname"
     
       #uses: appleboy/ssh-action@v1.1.0
       #with:
