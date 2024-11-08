@@ -24,8 +24,8 @@ jobs:
         echo "$PRIVATE_KEY" > private_key.pem #Write the private key to a file
         chmod 600 private_key.pem # Set the appropriate permissions for the key file
 
-        ssh -i private_key.pem administrator@108.181.155.160 \
-        hostname
+        ssh -i private_key.pem "$USER@$HOST" \
+        "hostname"
         
       #docker pull nexusneurondev/nexustodoapi​ \
       #docker run -d --name nexustodoapicontainer --restart unless-stopped -p 5000:8080 nexusneurondev/nexustodoapi:latest
