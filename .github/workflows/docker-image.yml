@@ -21,9 +21,9 @@ jobs:
          HOST: ${{ secrets.SSH_HOST }}
          USER: ${{ secrets.SSH_USER }}
       run: |
-        ssh -i PRIVATE_KEY "USER@HOST" <<EOF
-        docker pull TodoAPI_Two/nexustodoapi_two
-        EOF
+        ssh -i PRIVATE_KEY "USER@HOST" \
+          docker pull TodoAPI_Two/nexustodoapi_two
+
   
   #"docker pull ${IMAGE_NAME}:${IMAGE_TAG} \
   #&& docker stop live-container \
