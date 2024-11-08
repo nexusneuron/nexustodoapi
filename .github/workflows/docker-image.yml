@@ -25,9 +25,9 @@ jobs:
         chmod 600 private_key.pem # Set the appropriate permissions for the key file
 
         ssh -i private_key.pem "$USER@$HOST" \
-          docker pull nexusneurondev/nexustodoapi_two
+          docker pull nexusneurondev/nexustodoapi
         
-      #rm -f private_key.pem Remove the private key file after use for security
+        rm -f private_key.pem #Remove the private key file after use for security
 
   
   #"docker pull ${IMAGE_NAME}:${IMAGE_TAG} \
