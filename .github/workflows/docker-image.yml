@@ -40,9 +40,8 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
-        #script: hostname
-        run: | 
-          ssh ${{ secrets.USER_IP }} hostname
+        script: ssh ${{ secrets.USER_IP }} hostname
+          
 
       #env: 
          #PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
