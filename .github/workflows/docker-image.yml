@@ -15,26 +15,39 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Build the Docker image nexustodoapi
-      run: docker build . --file TodoAPI/Dockerfile --tag nexustodoapi
+    - name: Deploy using docker-compose
+      env: 
+         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
+         HOST: ${{ secrets.SSH_HOST }}
+         USER: ${{ secrets.SSH_USER }}
+      run: |
+        ssh -i PRIVATE_KEY "USER@HOST" <<EOF
+        docker pull TodoAPI_Two/nexustodoapi_two
+        EOF
+  
+  #"docker pull ${IMAGE_NAME}:${IMAGE_TAG} \
+  #&& docker stop live-container \
+  #&& docker rm live-container \
+  #&& docker run --init -d --name live-container -p 80:3000 ${IMAGE_NAME}:${IMAGE_TAG} \
+  #&& docker system prune -af" # remove unused images to free up space
 
-    - name: Build the Docker images nexustodoapi_two
-      run: docker build . --file TodoAPI_Two/Dockerfile --tag nexustodoapi_two
+    #- name: Build the Docker images nexustodoapi_two
+     # run: docker build . --file TodoAPI_Two/Dockerfile --tag nexustodoapi_two
       
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ vars.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    #- name: Login to Docker Hub
+    #  uses: docker/login-action@v3
+    #  with:
+     #   username: ${{ vars.DOCKERHUB_USERNAME }}
+     #   password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-    - name: Tag the Docker image nexustodoapi
-      run: docker tag nexustodoapi ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi
+   # - name: Tag the Docker image nexustodoapi
+    #  run: docker tag nexustodoapi ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi
 
-    - name: Tag the Docker image nexustodoapi_two
-      run: docker tag nexustodoapi_two ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi_two
+   # - name: Tag the Docker image nexustodoapi_two
+    #  run: docker tag nexustodoapi_two ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi_two
 
-    - name: Push the Docker image nexustodoapi
-      run: docker push ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi:latest
+   # - name: Push the Docker image nexustodoapi
+    #  run: docker push ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi:latest
 
-    - name: Push the Docker image nexustodoapi_two
-      run: docker push ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi_two:latest
+   # - name: Push the Docker image nexustodoapi_two
+   #   run: docker push ${{ vars.DOCKERHUB_USERNAME }}/nexustodoapi_two:latest
