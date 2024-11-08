@@ -31,7 +31,7 @@ jobs:
         #SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
         #NAME: production
         #USER: ${{ secrets.SSH_USER }} # admin
-    - run: | 
+      run: | 
         hostname
         ssh ${{ secrets.SSH_USER }} "hostname"
     
