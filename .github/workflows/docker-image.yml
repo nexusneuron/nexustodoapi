@@ -23,8 +23,7 @@ jobs:
         password: ${{ secrets.SSH_PRIVATE_KEY }}
         #port: ${{ secrets.PORT }}
         script: hostname
-        
-      #env: 
+     # #env: 
        #  PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
         # HOST: ${{ secrets.SSH_HOST }}
         # USER: ${{ secrets.SSH_USER }}
