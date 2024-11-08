@@ -32,7 +32,7 @@ jobs:
         chmod 600 private_key.pem # Set the appropriate permissions for the key file
 
         ssh -o StrictHostKeyChecking=no -i private_key.pem "$USER@$HOST" \
-        "hostname"
+          hostname
         
       #docker pull nexusneurondev/nexustodoapi​ \
       #docker run -d --name nexustodoapicontainer --restart unless-stopped -p 5000:8080 nexusneurondev/nexustodoapi:latest
