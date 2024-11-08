@@ -16,6 +16,14 @@ jobs:
     - uses: actions/checkout@v4
       
     - name: Deploy using docker-compose
+      uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
+      with:
+        ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.8
+        SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
+        NAME: production
+        USER: ${{ secrets.SSH_USER }} # admin
+    - run: ssh hostname
+    
       #uses: appleboy/ssh-action@v1.1.0
       #with:
         #host: ${{ secrets.SSH_HOST }}
@@ -23,16 +31,17 @@ jobs:
         #key: ${{ secrets.SSH_PRIVATE_KEY }}
         #port: ${{ secrets.PORT }}
         #script: hostname
-      env: 
-         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
-         HOST: ${{ secrets.SSH_HOST }}
-         USER: ${{ secrets.SSH_USER }}
-      run: |
-        echo "$PRIVATE_KEY" > private_key.pem #Write the private key to a file
-        chmod 600 private_key.pem # Set the appropriate permissions for the key file
 
-        ssh -o StrictHostKeyChecking=no -i private_key.pem "$USER@$HOST" \
-          hostname
+      #env: 
+         #PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
+         #HOST: ${{ secrets.SSH_HOST }}
+         #USER: ${{ secrets.SSH_USER }}
+      #run: |
+        #echo "$PRIVATE_KEY" > private_key.pem #Write the private key to a file
+        #chmod 600 private_key.pem # Set the appropriate permissions for the key file
+
+        #ssh -o StrictHostKeyChecking=no -i private_key.pem "$USER@$HOST" \
+          #hostname
         
       #docker pull nexusneurondev/nexustodoapi​ \
       #docker run -d --name nexustodoapicontainer --restart unless-stopped -p 5000:8080 nexusneurondev/nexustodoapi:latest
