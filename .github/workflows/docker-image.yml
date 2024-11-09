@@ -17,7 +17,7 @@ jobs:
 
     - name: Setup SSH
       run: | 
-         mkdir -p C:\Users\runneradmin\.ssh && type nul >> access
+         mkdir -p C:\Users\runneradmin\.ssh && type nul > access
          echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access      
          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> C:\Users\runneradmin\.ssh\known_hosts
          
