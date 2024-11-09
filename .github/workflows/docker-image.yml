@@ -31,7 +31,12 @@ jobs:
         SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
         NAME: production
         USER: ${{ secrets.SSH_USER }} # admin
-    - run: ssh production ls --help
+      env: 
+         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} # Reference the private key stored in GitHub Secrets
+    - run: |
+         echo "$PRIVATE_KEY" > private_key.pem #Write the private key to a file
+         chmod 600 private_key.pem # Set the appropriate permissions for the key file
+         ssh -i private_key.pem production ls --help
     
       #uses: appleboy/ssh-action@1a8b3784eaa665f677fa114edd5683bb6a6bfaa8
       #with:
