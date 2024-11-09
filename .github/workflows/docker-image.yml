@@ -17,8 +17,8 @@ jobs:
 
     - name: Setup SSH
       run: | 
-         echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
-         echo "${{ secrets.SSH_PUBLIC_KEY }}" > C:\Users\runneradmin\.ssh\access.pub         
+         touch C:\Users\runneradmin\.ssh\access
+         echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access      
          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> C:\Users\runneradmin\.ssh\known_hosts
          
         #chmod 600 C:\Users\runneradmin\.ssh\access
@@ -43,7 +43,7 @@ jobs:
         #port: ${{ secrets.PORT }}
         #script: |
         #  powershell.exe        
-       #mkdir -p C:\Users\runneradmin\.ssh\access && 
+       #mkdir -p C:\Users\runneradmin\.ssh\access && echo "${{ secrets.SSH_PUBLIC_KEY }}" > C:\Users\runneradmin\.ssh\access.pub   
           
 
       #env: 
