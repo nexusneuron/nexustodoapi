@@ -16,8 +16,8 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Setup SSH
-      run: |
-         mkdir -p C:\Users\runneradmin\.ssh\access &&  chmod 700 C:\Users\runneradmin\.ssh\access
+      run: | 
+         chmod 700 C:\Users\runneradmin\.ssh\
          echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
          echo "${{ secrets.SSH_PUBLIC_KEY }}" > C:\Users\runneradmin\.ssh\access.pub
          chmod 600 C:\Users\runneradmin\.ssh\access
@@ -41,7 +41,8 @@ jobs:
         #key: ${{ secrets.SSH_PRIVATE_KEY }}
         #port: ${{ secrets.PORT }}
         #script: |
-        #  powershell.exe
+        #  powershell.exe        
+       #mkdir -p C:\Users\runneradmin\.ssh\access && 
           
 
       #env: 
