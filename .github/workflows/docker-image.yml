@@ -19,9 +19,8 @@ jobs:
       env: 
          path: C:\Users\runneradmin\.ssh #Path 
       run: | 
-         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access.txt
-         echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access      
-         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> C:\Users\runneradmin\.ssh\known_hosts
+         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access
+         echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
          
         #chmod 600 C:\Users\runneradmin\.ssh\access
         #chmod 600 C:\Users\runneradmin\.ssh\access.pub
