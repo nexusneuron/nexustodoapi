@@ -19,7 +19,7 @@ jobs:
       env: 
          PATH: C:\Users\runneradmin\.ssh #Path 
       run: | 
-         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && type >> ~\access
+         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && type >> access.txt
          echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access      
          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> C:\Users\runneradmin\.ssh\known_hosts
          
