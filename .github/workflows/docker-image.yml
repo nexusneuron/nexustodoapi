@@ -33,7 +33,7 @@ jobs:
         USER: ${{ secrets.SSH_USER }} # admin
     - run: | 
          Get-ChildItem C:\Users\runneradmin\.ssh
-         ssh -i $SSHKEY "$USER@$$ORIGIN" \
+         ssh -i $SSHKEY "$USER@$ORIGIN" \
          "hostname"
   #ssh production hostname 
   #ssh production "docker run -d --name nexustodoapicontainer --restart unless-stopped -p 5000:8080 nexusneurondev/nexustodoapi:latest"
