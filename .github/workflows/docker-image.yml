@@ -17,7 +17,7 @@ jobs:
 
     - name: Setup SSH
       run: | 
-         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access && New-Item access.pub
+         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh
          echo "${{ secrets.SSH_PUBLIC_KEY }}" >> C:\Users\runneradmin\.ssh\access.pub
          echo "${{ secrets.SSH_PRIVATE_KEY }}" >>  C:\Users\runneradmin\.ssh\access
          Get-ChildItem C:\Users\runneradmin\.ssh
