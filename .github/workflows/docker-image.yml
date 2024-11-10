@@ -16,9 +16,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Setup SSH
-      run: | 
-         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access
-         echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
+      #run: | 
+      #   mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access
+      #   echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
          
     - name: Deploy using docker-compose
       uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
@@ -27,7 +27,9 @@ jobs:
         SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
         NAME: production
         USER: ${{ secrets.SSH_USER }} # admin
-    - run: |
+    - run: |     
+         mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access
+         echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
          ssh production ls --help
     
       #uses: appleboy/ssh-action@1a8b3784eaa665f677fa114edd5683bb6a6bfaa8
