@@ -31,7 +31,7 @@ jobs:
         NAME: production        
         PORT: ${{ secrets.PORT }} 
         USER: ${{ secrets.SSH_USER }} # admin
-        run: | 
+    - run: | 
          Get-ChildItem C:\Users\runneradmin\.ssh
          ssh -i C:\Users\runneradmin\.ssh\access  production '"hostname"'
          
