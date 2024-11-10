@@ -25,18 +25,23 @@ jobs:
 
     - name: Adding Known Hosts
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> C:\Users\runneradmin\.ssh\known_hosts
-         
-    - name: Deploy using docker-compose
-      uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
-      with:
-        ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.
-        SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
-        NAME: production
-        PORT: ${{ secrets.PORT }}
-        USER: ${{ secrets.SSH_USER }} # admin
 
-    - name: SSH trial
-      run: ssh production "echo hehe >> h.txt "
+    - name: SSH without action
+      run: |
+         ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+         "hostname"
+         
+    #- name: Deploy using docker-compose
+    #  uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
+    #  with:
+    #    ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.
+     #   SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
+     #   NAME: production
+      #  PORT: ${{ secrets.PORT }}
+      #  USER: ${{ secrets.SSH_USER }} # admin
+
+   # - name: SSH trial
+   #   run: ssh production "echo hehe >> h.txt "
          
     #ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
     #"hostname"
