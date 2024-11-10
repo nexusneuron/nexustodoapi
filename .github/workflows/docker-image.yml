@@ -29,7 +29,9 @@ jobs:
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> C:\Users\runneradmin\.ssh\known_hosts
 
     - name: Adding File Permissions
-      run: icacls "C:\Users\runneradmin\.ssh\" /grant runneradmin:F /t /c /q
+      run: |
+        icacls "C:\Users\runneradmin\.ssh\" /grant runneradmin:F /t /c /q
+        Get-ChildItem C:\Users\runneradmin\.ssh
 
     - name: SSH without action
       run: |
