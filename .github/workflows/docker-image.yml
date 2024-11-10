@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup SSH
+    #- name: Setup SSH
       #run: | 
       #   mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access
       #   echo "${{ secrets.SSH_PRIVATE_KEY }}" >  C:\Users\runneradmin\.ssh\access
