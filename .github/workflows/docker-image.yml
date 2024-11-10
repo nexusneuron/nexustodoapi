@@ -19,7 +19,7 @@ jobs:
       run: | 
          mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh
          echo "${{ secrets.SSH_PRIVATE_KEY }}" >>  C:\Users\runneradmin\.ssh\access
-         icacls C:\Users\runneradmin\.ssh\* /grant runneradmin:(f) /t /c /q 
+         icacls C:\Users\runneradmin\.ssh\* /grant runneradmin:(MA) /t /c /q 
          ssh-add C:\Users\runneradmin\.ssh\access
          Get-ChildItem C:\Users\runneradmin\.ssh
          
