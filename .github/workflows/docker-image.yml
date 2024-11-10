@@ -33,11 +33,12 @@ jobs:
         USER: ${{ secrets.SSH_USER }} # admin
     - run: | 
          Get-ChildItem C:\Users\runneradmin\.ssh
-         ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-         "hostname"
+         ssh production --help
+    #ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+    #"hostname"
   #ssh production hostname 
   #ssh production "docker run -d --name nexustodoapicontainer --restart unless-stopped -p 5000:8080 nexusneurondev/nexustodoapi:latest"
-  #ssh production dir --help
+
     
       #uses: appleboy/ssh-action@1a8b3784eaa665f677fa114edd5683bb6a6bfaa8
       #with:
