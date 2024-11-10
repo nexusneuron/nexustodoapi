@@ -33,7 +33,8 @@ jobs:
         USER: ${{ secrets.SSH_USER }} # admin
     - run: | 
          Get-ChildItem C:\Users\runneradmin\.ssh
-         ssh production --help
+         ssh production hostname
+         
     #ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
     #"hostname"
   #ssh production hostname 
