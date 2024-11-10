@@ -33,8 +33,8 @@ jobs:
 
     - name: SSH without action
       run: |
-         ssh production \
-         "hostname"
+         ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+         'hostname'
          
     #- name: Deploy using docker-compose
     #  uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
