@@ -25,7 +25,8 @@ jobs:
       with:
         ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.8
         SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
-        NAME: production
+        NAME: production        
+        PORT: ${{ secrets.PORT }} 
         USER: ${{ secrets.SSH_USER }} # admin
     - run: | 
          ssh production ls --help
