@@ -36,7 +36,7 @@ jobs:
         USER: ${{ secrets.SSH_USER }} # admin
 
     - name: SSH trial
-      run: ssh production '"hostname"'
+      run: ssh production "echo hehe >> h.txt "
          
     #ssh -i C:\Users\runneradmin\.ssh\access "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
     #"hostname"
