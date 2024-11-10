@@ -26,7 +26,7 @@ jobs:
     - name: Deploy using docker-compose
       uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
       with:
-        ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.
+        ORIGIN: ${{ secrets.SSH_HOST }} # example.com || 8.8.8.8
         SSHKEY: ${{ secrets.SSH_PRIVATE_KEY }} # ----- BEGIN RSA PRIVATE KEY----- ...
         NAME: production        
         PORT: ${{ secrets.PORT }} 
