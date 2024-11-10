@@ -23,7 +23,7 @@ jobs:
       #openssh-portablessh-add C:\Users\runneradmin\.ssh\access
       #Get-ChildItem C:\Users\runneradmin\.ssh
 
-    - name: Adding ssh config
+    - name: Adding ssh confi
       run: echo "Host production\r\nHostName ${{ secrets.SSH_HOST }}\r\nUser ${{ secrets.SSH_USER }}\r\nIdentityFile C:\Users\runneradmin\.ssh\access\r\nStrictHostKeyChecking no" >> C:\Users\runneradmin\.ssh\config 
 
     - name: Adding Known Hosts
