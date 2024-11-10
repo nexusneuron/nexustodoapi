@@ -31,7 +31,7 @@ jobs:
         NAME: production        
         PORT: ${{ secrets.PORT }} 
         USER: ${{ secrets.SSH_USER }} # admin
-    - run: | 
+        run: | 
          Get-ChildItem C:\Users\runneradmin\.ssh
          ssh production '"Invoke-Command -HostName ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST } -ScriptBlock { docker -v }"'
          
