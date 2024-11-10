@@ -18,7 +18,7 @@ jobs:
     - name: Setup SSH
       run: | 
          mkdir -p C:\Users\runneradmin\.ssh && cd C:\Users\runneradmin\.ssh && New-Item access
-         echo "${{ secrets.SSH_PRIVATE_KEY }}" |  C:\Users\runneradmin\.ssh\access
+         echo "${{ secrets.SSH_PRIVATE_KEY }}" >>  C:\Users\runneradmin\.ssh\access
          
     - name: Deploy using docker-compose
       uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
