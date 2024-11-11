@@ -7,9 +7,11 @@ services:
       context: .
       dockerfile: TodoAPI\Dockerfile
     restart: unless-stopped
+    volumes:
+      - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
       - "5000:8080"
-      - "5001:8081"
+      #- "5001:8081"
 
   todoapi_two:
     #image: ${DOCKER_REGISTRY-}todoapi_two
@@ -17,6 +19,8 @@ services:
       context: .
       dockerfile: TodoAPI_Two\Dockerfile
     restart: unless-stopped
+    volumes:
+      - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
       - "5005:8080"
-      - "5006:8081"
+      #- "5006:8081"
