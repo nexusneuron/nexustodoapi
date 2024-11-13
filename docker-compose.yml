@@ -24,3 +24,8 @@ services:
     ports:
       - "5005:8080"
       #- "5006:8081"
+
+networks:
+ default:
+  name: nexus_neuron
+  external: true
