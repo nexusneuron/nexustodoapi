@@ -1,31 +1,86 @@
-version: '3.4'
-
 services:
   todoapi:
     #image: ${DOCKER_REGISTRY-}todoapi
     build:
       context: .
       dockerfile: TodoAPI\Dockerfile
+    image: registry.ubuntudockerserver:5000/todoapi
     restart: unless-stopped
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - "5000:8080"
+      - "5000:80"
       #- "5001:8081"
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+       interval: 5s
+       timeout: 90s
+       retries: 3
+       test: CMD powershell -command `
+             try { `
+              $response = iwr http://localhost/ -UseBasicParsing; `
+              if ($response.StatusCode -eq 200) { return 0} `
+              else {return 1}; `
+             } catch { return 1 }
+    networks:
+      - nexus_overlay
 
   todoapi_two:
     #image: ${DOCKER_REGISTRY-}todoapi_two
     build:
       context: .
       dockerfile: TodoAPI_Two\Dockerfile
+    image: registry.ubuntudockerserver:5000/todoapi_two
     restart: unless-stopped
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - "5005:8080"
+      - "5005:80"
       #- "5006:8081"
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+       interval: 5s
+       timeout: 90s
+       retries: 3
+       test: CMD powershell -command `
+             try { `
+              $response = iwr http://localhost/ -UseBasicParsing; `
+              if ($response.StatusCode -eq 200) { return 0} `
+              else {return 1}; `
+             } catch { return 1 }
+    networks:
+      - nexus_overlay  
+    
 
 networks:
- default:
-  name: nexus_neuron
-  external: true
+  nexus_overlay:
+    external: 
+      name: nexus_overlay
