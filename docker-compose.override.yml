@@ -4,10 +4,10 @@ services:
   todoapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTP_PORTS=80
       #- ASPNETCORE_HTTPS_PORTS=8081
     ports:
-      - "5000:8080"
+      - "5000:80"
       #- "8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
@@ -15,10 +15,10 @@ services:
   todoapi_two:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTP_PORTS=80
       #- ASPNETCORE_HTTPS_PORTS=8081
     ports:
-      - "5005:8080"
+      - "5005:80"
       #- "8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
