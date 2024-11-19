@@ -1,4 +1,42 @@
 services:
+  nginx:
+    build: .\nginx
+    image: registry.ubuntudockerserver:5000/nginxwebserver
+    #volumes:
+    # - .\nginx\nginx.conf:c:\nginx\nginx-1.27.2\conf\nginx.conf
+    ports:
+     - target: 80
+       published: 80
+       protocol: tcp
+       mode: ingress   
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+       interval: 5s
+       timeout: 90s
+       retries: 3
+       test: CMD powershell -command `
+             try { `
+              $response = iwr http://localhost/ -UseBasicParsing; `
+              if ($response.StatusCode -eq 200) { return 0} `
+              else {return 1}; `
+             } catch { return 1 }
+    networks:
+      - nexus_overlay
+
   todoapi:
     #image: ${DOCKER_REGISTRY-}todoapi
     build:
@@ -9,13 +47,10 @@ services:
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - name: web
-        target: 8080
-        host_ip: 127.0.0.1
-        published: "5000"
+      - target: 8080
+        published: 5000
         protocol: tcp
-        app_protocol: http
-        mode: host
+        mode: ingress
 
       #- name: web-secured
       #  target: 443
@@ -62,13 +97,10 @@ services:
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - name: web
-        target: 8080
-        host_ip: 127.0.0.1
-        published: "5005"
+      - target: 8080
+        published: 5005
         protocol: tcp
-        app_protocol: http
-        mode: host
+        mode: ingress
 
       #- name: web-secured
       #  target: 443
