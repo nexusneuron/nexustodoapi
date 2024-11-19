@@ -9,7 +9,7 @@ services:
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - "5000:80"
+      - "5000:8080"
       #- "5001:8081"
     deploy:
       replicas: 2
@@ -49,7 +49,7 @@ services:
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - "5005:80"
+      - "5005:8080"
       #- "5006:8081"
     deploy:
       replicas: 2
