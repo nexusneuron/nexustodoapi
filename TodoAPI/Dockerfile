@@ -1,7 +1,7 @@
 #FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809 as base
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-ltsc2022 as base
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 80
 #EXPOSE 8081
 
 #FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
