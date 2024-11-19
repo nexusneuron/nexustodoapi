@@ -82,5 +82,5 @@ services:
 
 networks:
   nexus_overlay:
-    external: 
-      name: nexus_overlay
+    name: nexus_overlay
+    external: true
