@@ -9,8 +9,21 @@ services:
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - "5000:80"
-      #- "5001:8081"
+      - name: web
+        target: 8080
+        host_ip: 127.0.0.1
+        published: "5000"
+        protocol: tcp
+        app_protocol: http
+        mode: host
+
+      #- name: web-secured
+      #  target: 443
+      #  host_ip: 127.0.0.1
+      #  published: "8083-9000"
+      #  protocol: tcp
+      #  app_protocol: https
+      #  mode: host
     deploy:
       replicas: 2
       update_config:
@@ -49,8 +62,21 @@ services:
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
     ports:
-      - "5005:8080"
-      #- "5006:8081"
+      - name: web
+        target: 8080
+        host_ip: 127.0.0.1
+        published: "5005"
+        protocol: tcp
+        app_protocol: http
+        mode: host
+
+      #- name: web-secured
+      #  target: 443
+      #  host_ip: 127.0.0.1
+      #  published: "8083-9000"
+      #  protocol: tcp
+      #  app_protocol: https
+      #  mode: host
     deploy:
       replicas: 2
       update_config:
