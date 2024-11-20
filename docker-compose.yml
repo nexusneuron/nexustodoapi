@@ -7,8 +7,8 @@ services:
     ports:
      - target: 80
        published: 80
-       protocol: tcp
-       mode: ingress   
+       #protocol: tcp
+       #mode: host   
     deploy:
       replicas: 2
       update_config:
@@ -36,6 +36,7 @@ services:
              } catch { return 1 }
     networks:
       - nexus_overlay
+      #- default
 
   todoapi:
     #image: ${DOCKER_REGISTRY-}todoapi
@@ -49,8 +50,8 @@ services:
     ports:
       - target: 8080
         published: 5000
-        protocol: tcp
-        mode: ingress
+        #protocol: tcp
+        #mode: ingress
 
       #- name: web-secured
       #  target: 443
@@ -86,6 +87,9 @@ services:
              } catch { return 1 }
     networks:
       - nexus_overlay
+      #- default
+      #nexus_overlay:
+      #  ipv4_address: 10.0.1.5
 
   todoapi_two:
     #image: ${DOCKER_REGISTRY-}todoapi_two
@@ -99,8 +103,8 @@ services:
     ports:
       - target: 8080
         published: 5005
-        protocol: tcp
-        mode: ingress
+        #protocol: tcp
+        #mode: ingress
 
       #- name: web-secured
       #  target: 443
@@ -135,10 +139,14 @@ services:
               else {return 1}; `
              } catch { return 1 }
     networks:
-      - nexus_overlay  
+      - nexus_overlay
+      #- default      
     
 
 networks:
   nexus_overlay:
     name: nexus_overlay
     external: true
+#  nexus_nat:
+#    name: nexus_nat
+#    internal: true
