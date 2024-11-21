@@ -2,8 +2,10 @@ services:
   nginx:
     build: .\nginx
     image: registry.ubuntudockerserver:5000/nginxwebserver
-    #volumes:
-    # - .\nginx\nginx.conf:c:\nginx\nginx-1.27.2\conf\nginx.conf
+    volumes:
+     - ${APPDATA}\Roaming\Nginx\Nginx-1.27.2\nginx.conf:c:\nginx\nginx-1.27.2\conf\nginx.conf
+     - ${APPDATA}\Roaming\Nginx\Nginx-1.27.2\index.html:c:\nginx\enabled-sites\html
+     #- ${APPDATA}\Roaming\Nginx\ssl:c:\nginx\ssl
     ports:
      - target: 80
        published: 80
