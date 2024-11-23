@@ -8,12 +8,12 @@ services:
     restart: unless-stopped
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
-      - nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
-      - nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
-      - nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
     ports:
       - '5000:8080'
-      - '5001:8081'
+      #- '5001:8081'
       #- target: 8081
        # published: 5001
         
@@ -33,13 +33,13 @@ services:
       #  protocol: tcp
       #  app_protocol: https
       #  mode: host
-    environment:
+    #environment:
       #- VIRTUAL_HOST: my_domain.com
       #- LETSENCRYPT_HOST: my_domain.com
       #- LETSENCRYPT_EMAIL: my@email.com
-      - VIRTUAL_HOST=devhub.nexusneuron.com
-      - LETSENCRYPT_HOST=devhub.nexusneuron.com
-      - LETSENCRYPT_EMAIL=nexus.neuron.io@gmail.com
+      #- VIRTUAL_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_EMAIL=nexus.neuron.io@gmail.com
     deploy:
       replicas: 2
       update_config:
