@@ -22,10 +22,12 @@ namespace TodoAPI.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly ITodoRepository _todoRepository;
+        private readonly ApplicationDbContext _context;
 
-        public TodoItemsController(ITodoRepository todoRepository)
+        public TodoItemsController(ITodoRepository todoRepository, ApplicationDbContext context)
         {
             _todoRepository = todoRepository;
+            _context = context;
         }
         #endregion
 
@@ -33,13 +35,14 @@ namespace TodoAPI.Controllers
         [HttpGet]
         public IActionResult List()
         {
-            return Ok(_todoRepository.All);
+            //return Ok(_todoRepository.All);
+            return Ok(_context.TodoItems.ToList());
         }
         #endregion
 
         #region snippetCreate
         [HttpPost]
-        public IActionResult Create([FromBody]TodoItem item)
+        public async Task<IActionResult> Create([FromBody]TodoItem item)
         {
             try
             {
@@ -52,7 +55,12 @@ namespace TodoAPI.Controllers
                 {
                     return StatusCode(StatusCodes.Status409Conflict, ErrorCode.TodoItemIDInUse.ToString());
                 }
-                _todoRepository.Insert(item);
+                //_todoRepository.Insert(item);
+
+                //item.ID = new Guid().ToString();
+                _context.TodoItems.Add(item);
+                await _context.SaveChangesAsync();
+                //_context.SaveChanges();
             }
             catch (Exception)
             {
