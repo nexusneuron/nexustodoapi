@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoAPI.Data;
 
@@ -11,13 +12,15 @@ using TodoAPI.Data;
 namespace TodoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250101124829_mpesaedits")]
+    partial class mpesaedits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -70,8 +73,11 @@ namespace TodoAPI.Migrations
 
             modelBuilder.Entity("TodoAPI.Models.StkCallback", b =>
                 {
-                    b.Property<string>("MpesaReceiptNumber")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("AccountReference")
                         .HasColumnType("longtext");
@@ -85,7 +91,11 @@ namespace TodoAPI.Migrations
                     b.Property<string>("MerchantRequestID")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("MpesaReceiptNumber")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int?>("PhoneNumber")
@@ -97,7 +107,7 @@ namespace TodoAPI.Migrations
                     b.Property<string>("TransactionDesc")
                         .HasColumnType("longtext");
 
-                    b.HasKey("MpesaReceiptNumber");
+                    b.HasKey("ID");
 
                     b.ToTable("SktCallback");
                 });

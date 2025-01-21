@@ -1,0 +1,262 @@
+﻿using System.Net;
+using System.Text;
+using System;
+using System.IO;
+using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Asn1.Crmf;
+using RestSharp;
+using TodoAPI.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using TodoAPI.Controllers;
+using System.Security.Principal;
+using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
+
+namespace TodoAPI.Services
+{
+    public class mpesaservices : IMpesaServices
+    {
+        //private readonly HttpClient RestClient;
+        //HttpClient RestClient = new HttpClient();
+
+        //public mpesaservices(HttpClient restClient)
+        //{
+        //    
+        //}
+
+        public void oauth()
+        {
+            string a = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+            string baseUrl = a;
+
+            String app_key = "u11qBPpOexjQE4TXGCG5t0rIiFj0qJpjyW3FfP0KnaOS8N7x";
+            String app_secret = "U4uUcGT0BkurOSAZnMrdQnCM7HUchS9AG2hOOzCLATZ2su0WsX5AL8Rsd2aHNoci";
+
+            byte[] auth = Encoding.UTF8.GetBytes(app_key + ":" + app_secret);
+            String encoded = System.Convert.ToBase64String(auth);
+
+            //HttpClient RestClient = new HttpClient();
+            var client = new RestClient(baseUrl);
+            var request = new  RestRequest();
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseUrl);
+
+            //request.Headers.Add("Authorization", "Basic " + encoded);
+            //request.ContentType = "application/json";
+            //request.Headers.Add("cache-control", "no-cache");
+            request.Method = RestSharp.Method.Get;
+
+            request.AddHeader("Authorization", "Basic " + encoded);
+            request.AddParameter("text/plain", "", ParameterType.RequestBody);
+            //RestResponse response = client.Execute(request);
+            //Console.WriteLine(response.Content);
+
+            try
+            {
+                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                // Get the stream associated with the response.
+                //Stream receiveStream = response.GetResponseStream();
+
+                // Pipes the stream to a higher level stream reader with the required encoding format. 
+                //StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+
+                //Console.WriteLine(readStream.ReadToEnd());
+                //response.Close();
+                //readStream.Close();
+                RestResponse response = client.Execute(request);
+                if (response.ErrorException != null)
+                {
+                    Console.WriteLine(response.ErrorException.Message);
+                    return;
+                }
+                Console.WriteLine(response.Content);
+            }
+            catch (WebException ex)
+            {
+                var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                Console.WriteLine(resp);
+
+            }
+        }
+
+        public async Task<RestResponse> oauth2()
+        {
+            string baseUrl = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+
+            String app_key = "u11qBPpOexjQE4TXGCG5t0rIiFj0qJpjyW3FfP0KnaOS8N7x";
+            String app_secret = "U4uUcGT0BkurOSAZnMrdQnCM7HUchS9AG2hOOzCLATZ2su0WsX5AL8Rsd2aHNoci";
+
+            byte[] auth = Encoding.UTF8.GetBytes(app_key + ":" + app_secret);
+            String encoded = System.Convert.ToBase64String(auth);
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest();
+
+            //request.AddHeader("ContentType", "application/json");
+            //request.AddHeader("cache-control", "no-cache");
+
+            request.Method = RestSharp.Method.Get;
+
+            request.AddHeader("Authorization", "Basic " + encoded);
+            request.AddParameter("text/plain", "", ParameterType.RequestBody);
+            
+
+            var response = await client.ExecuteAsync(request);
+            if (response.ErrorException != null)
+            {
+                Console.WriteLine(response.ErrorException.Message);
+                return response;
+            }
+
+            Console.WriteLine(response.Content);
+            return response;
+
+        }
+
+
+        public class TypeHere
+        {
+            public string access_token { get; set; }
+        }
+
+        /// <summary>
+        /// stk request class
+        /// </summary>
+        public class stkrequest
+        {
+            //public string access_token { get; set; }
+            public string Password { get; set; }
+            public int BusinessShortCode { get; set; }
+            public string Timestamp { get; set; }
+            public string TransactionType { get; set; }
+            public int Amount { get; set; }
+            public long PartyA { get; set; }
+            public int PartyB { get; set; }
+            public long PhoneNumber { get; set; }
+            public string CallBackURL { get; set; }
+            public string AccountReference { get; set; }
+            public string TransactionDesc { get; set; }
+
+        }
+
+        public async Task<RestResponse> stkpush()
+        {
+            string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest();
+            request.Method = RestSharp.Method.Post;
+
+            var getaccesstoken = await oauth2();
+
+            if (getaccesstoken.ErrorException != null)
+            {
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                return getaccesstoken;
+            }
+
+            Console.WriteLine(getaccesstoken.Content);
+
+
+            TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
+            var _accesstoken = typeHere.access_token;
+
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", "Bearer " + _accesstoken);
+
+            Console.WriteLine(_accesstoken);
+
+            DateTime d = DateTime.Now;
+            string dateString = d.ToString("yyyyMMddHHmmss");
+
+            string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+            int shortcode = 174379;
+            byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
+            String _encodedpassword = System.Convert.ToBase64String(_password);
+
+            ////////////////////////////////
+            stkrequest stk = new stkrequest(){
+                Password = _encodedpassword,
+                BusinessShortCode = shortcode,
+                Timestamp = dateString,
+                TransactionType = "CustomerPayBillOnline",
+                Amount = 1,
+                PartyA = 254717904391,
+                PartyB = shortcode,
+                PhoneNumber = 254717904391,
+                //CallBackURL = "https://buzzard-hip-donkey.ngrok-free.app/api/stkcallbacks",
+                CallBackURL = "https://testsite.nexusneuron.com/api/stkcallbacks",
+                AccountReference = "CompanyXLTD",
+                TransactionDesc = "Payment of X"
+            };
+
+            string jsonstk = JsonConvert.SerializeObject(stk, Formatting.Indented);
+
+            Console.WriteLine(jsonstk);
+
+
+            //string json = @"{
+            //                    ""BusinessShortCode"": 174379,
+            //                    //""Password"": ""MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjQxMjE3MTQ0ODQ2"",
+            //                    ""Timestamp"": ""DateTime.Now"",
+            //                    ""TransactionType"": ""CustomerPayBillOnline"",
+            //                    ""Amount"": 1,
+            //                    ""PartyA"": 254708374149,
+            //                    ""PartyB"": 174379,
+            //                    ""PhoneNumber"": 254708374149,
+            //                    ""CallBackURL"": ""https://mydomain.com/path"",
+            //                    ""AccountReference"": ""CompanyXLTD"",
+            //                    ""TransactionDesc"": ""Payment of X""
+            //                  }";
+
+            request.AddParameter("application/json", jsonstk ,  ParameterType.RequestBody);
+            ////////////////////////////////
+
+            var response = await client.ExecuteAsync(request);
+            if (response.ErrorException != null)
+            {
+                Console.WriteLine(response.ErrorException.Message);
+                return response;
+            }
+
+            Console.WriteLine(response.Content);
+            return response;
+
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+//StkCallback jsonrespo = JsonConvert.DeserializeObject<StkCallback>(stkCallback.ToString());
+
+//StkCallback stkresponse = new StkCallback()
+//{
+//    AccountReference = jsonrespo.AccountReference,  //check if amts under this account reference total with invoice
+//    Amount = jsonrespo.Amount,
+//    CheckoutRequestID = jsonrespo.CheckoutRequestID,
+//    MerchantRequestID = jsonrespo.MerchantRequestID,
+//    MpesaReceiptNumber = jsonrespo.MpesaReceiptNumber,
+//    Name = jsonrespo.Name,
+//    PhoneNumber = jsonrespo.PhoneNumber,
+//    TransactionDate = jsonrespo.TransactionDate,
+//    TransactionDesc = jsonrespo.TransactionDesc,
+//};
+
+//Console.WriteLine(stkCallback);
+//Console.WriteLine(jsonrespo);
+//Console.WriteLine(stkresponse);
+
+//_context.SktCallback.Add(stkresponse);
+//await _context.SaveChangesAsync();
+
+//return NoContent();

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RestSharp;
 using TodoAPI.Interfaces;
+using TodoAPI.MessageBroker.Services;
 using TodoAPI.Models;
+using TodoAPI.Services;
 
 namespace TodoAPI.Controllers
 {
@@ -23,11 +26,15 @@ namespace TodoAPI.Controllers
     {
         private readonly ITodoRepository _todoRepository;
         private readonly ApplicationDbContext _context;
+        private readonly IMpesaServices _mpesaservice;
+        private readonly IRabbitMQPublisher _rabbitMQPublisher;
 
-        public TodoItemsController(ITodoRepository todoRepository, ApplicationDbContext context)
+        public TodoItemsController(ITodoRepository todoRepository, ApplicationDbContext context, IMpesaServices mpepe, IRabbitMQPublisher rabbitMQPublisher)
         {
             _todoRepository = todoRepository;
             _context = context;
+            _mpesaservice = mpepe;
+            _rabbitMQPublisher = rabbitMQPublisher;
         }
         #endregion
 
@@ -58,6 +65,25 @@ namespace TodoAPI.Controllers
                 //_todoRepository.Insert(item);
 
                 //item.ID = new Guid().ToString();
+
+                //_mpesaservice.oauth();
+
+                //var response = await _mpesaservice.oauth2();
+
+                //if (response.ErrorException != null)
+                //{
+                //    Console.WriteLine(response.ErrorException.Message);
+                //    return BadRequest(ErrorCode.CouldNotCreateItem.ToString());
+                //}
+
+                //Console.WriteLine(response.Content);
+
+                var response = await _mpesaservice.stkpush();
+
+
+                //send the inserted product data to the queue and consumer will listening this data from queue
+                _rabbitMQPublisher.SendStkResponseMessage(response.Content);
+
                 _context.TodoItems.Add(item);
                 await _context.SaveChangesAsync();
                 //_context.SaveChanges();
