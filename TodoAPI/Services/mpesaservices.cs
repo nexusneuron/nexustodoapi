@@ -225,38 +225,73 @@ namespace TodoAPI.Services
 
         }
 
+        /// <summary>
+        /// C2B URL REGISTRATION class
+        /// </summary>
+        public class ctoburl
+        {
+            public int ShortCode { get; set; }
+            public string ResponseType { get; set; }
+            public string ConfirmationURL { get; set; }
+            public string ValidationURL { get; set; }
+
+        }
+
+        public async Task<RestResponse> CtoBRegisterURL()
+        {
+            string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest();
+            request.Method = RestSharp.Method.Post;
+
+            var getaccesstoken = await oauth2();
+
+            if (getaccesstoken.ErrorException != null)
+            {
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                return getaccesstoken;
+            }
+
+            Console.WriteLine(getaccesstoken.Content);
+
+
+            TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
+            var _accesstoken = typeHere.access_token;
+
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", "Bearer " + _accesstoken);
+
+            ctoburl ctob = new ctoburl()
+            {
+                ShortCode = 600989,
+                ResponseType = "Completed",
+                //ConfirmationURL = "https://buzzard-hip-donkey.ngrok-free.app/api/ctobconfirmations",
+                //ValidationURL = "https://buzzard-hip-donkey.ngrok-free.app",
+                ConfirmationURL = "https://testsite.nexusneuron.com/api/ctobconfirmations",
+                ValidationURL = "https://testsite.nexusneuron.com",
+            };
+
+            string jsonctob = JsonConvert.SerializeObject(ctob, Formatting.Indented);
+
+            request.AddParameter("application/json", jsonctob, ParameterType.RequestBody);
+            ////////////////////////////////
+
+            var response = await client.ExecuteAsync(request);
+            if (response.ErrorException != null)
+            {
+                Console.WriteLine(response.ErrorException.Message);
+                return response;
+            }
+
+            Console.WriteLine(response.Content);
+            return response;
+
+        }
+
     }
 }
 
 
 
 
-
-
-
-
-
-
-//StkCallback jsonrespo = JsonConvert.DeserializeObject<StkCallback>(stkCallback.ToString());
-
-//StkCallback stkresponse = new StkCallback()
-//{
-//    AccountReference = jsonrespo.AccountReference,  //check if amts under this account reference total with invoice
-//    Amount = jsonrespo.Amount,
-//    CheckoutRequestID = jsonrespo.CheckoutRequestID,
-//    MerchantRequestID = jsonrespo.MerchantRequestID,
-//    MpesaReceiptNumber = jsonrespo.MpesaReceiptNumber,
-//    Name = jsonrespo.Name,
-//    PhoneNumber = jsonrespo.PhoneNumber,
-//    TransactionDate = jsonrespo.TransactionDate,
-//    TransactionDesc = jsonrespo.TransactionDesc,
-//};
-
-//Console.WriteLine(stkCallback);
-//Console.WriteLine(jsonrespo);
-//Console.WriteLine(stkresponse);
-
-//_context.SktCallback.Add(stkresponse);
-//await _context.SaveChangesAsync();
-
-//return NoContent();

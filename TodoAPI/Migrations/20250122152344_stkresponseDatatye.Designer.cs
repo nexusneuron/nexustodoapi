@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoAPI.Data;
 
@@ -11,9 +12,11 @@ using TodoAPI.Data;
 namespace TodoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250122152344_stkresponseDatatye")]
+    partial class stkresponseDatatye
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace TodoAPI.Migrations
 
             modelBuilder.Entity("TodoAPI.Models.NexuspayConfirmation", b =>
                 {
-                    b.Property<string>("TransID")
+                    b.Property<string>("ID")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("BillRefNumber")
@@ -51,11 +54,11 @@ namespace TodoAPI.Migrations
                     b.Property<decimal?>("OrgAccountBalance")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("ThirdPartyTransID")
-                        .HasColumnType("longtext");
-
                     b.Property<int?>("TransAmount")
                         .HasColumnType("int");
+
+                    b.Property<string>("TransID")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("TransTime")
                         .HasColumnType("datetime(6)");
@@ -63,7 +66,7 @@ namespace TodoAPI.Migrations
                     b.Property<string>("TransactionType")
                         .HasColumnType("longtext");
 
-                    b.HasKey("TransID");
+                    b.HasKey("ID");
 
                     b.ToTable("NexuspayConfirmation");
                 });

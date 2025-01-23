@@ -22,7 +22,8 @@ namespace TodoAPI.MessageBroker.Services
             {
                 HostName = _rabbitMqSetting.HostName,
                 UserName = _rabbitMqSetting.UserName,
-                Password = _rabbitMqSetting.Password
+                Password = _rabbitMqSetting.Password,
+                Port = _rabbitMqSetting.Port
             };
 
             using var connection = await factory.CreateConnectionAsync();
@@ -35,7 +36,7 @@ namespace TodoAPI.MessageBroker.Services
             await Task.Run(() => channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: body));
         }
 
-        public async void SendStkResponseMessage<T>(T message)
+        public async Task SendStkResponseMessage<T>(T message)
         {
             //Here we specify the Rabbit MQ Server. we use rabbitmq docker image and use it
             //var factory = new ConnectionFactory
@@ -47,7 +48,8 @@ namespace TodoAPI.MessageBroker.Services
             {
                 HostName = _rabbitMqSetting.HostName,
                 UserName = _rabbitMqSetting.UserName,
-                Password = _rabbitMqSetting.Password
+                Password = _rabbitMqSetting.Password,
+                Port = _rabbitMqSetting.Port
             };
 
             //Create the RabbitMQ connection using connection factory details as i mentioned above

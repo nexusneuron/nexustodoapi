@@ -6,7 +6,7 @@
         public string? MerchantRequestID { get; set; } //"MerchantRequestID": "29115-34620561-1",
         public string? CheckoutRequestID { get; set; }    //            "CheckoutRequestID": "ws_CO_191220191020363925",
         public int? Amount { get; set; }    //            "Amount": "1",
-        public int? PhoneNumber { get; set; }    //            "PhoneNumber":"254708374149",
+        public long? PhoneNumber { get; set; }    //    LONG DATATYPE        "PhoneNumber":"254708374149",
         public string? AccountReference { get; set; }     //            "AccountReference":"Test" 
         public string? TransactionDesc { get; set; }    //            "TransactionDesc":"Test"
 

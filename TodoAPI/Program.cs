@@ -3,6 +3,8 @@ using TodoAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TodoAPI.MessageBroker.Services;
+using MassTransit;
+using TodoAPI.MessageBroker;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<TodoAPI.Interfaces.ITodoRepository, TodoAPI.Services.TodoRepository>();
 builder.Services.AddScoped<TodoAPI.Interfaces.IMpesaServices, TodoAPI.Services.mpesaservices>();
 builder.Services.AddScoped<IRabbitMQPublisher, RabbitMQPublisher>();
+builder.Services.AddScoped<IRabbitMQConsumer, RabbitMQConsumer>();
 builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -24,6 +27,8 @@ options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
                 //    maxRetryDelay: System.TimeSpan.FromSeconds(30),
                 //    errorNumbersToAdd: null));
 });
+
+builder.Services.Configure<RabbitMQSetting>(builder.Configuration.GetSection("RabbitMQ"));
 
 var app = builder.Build();
 

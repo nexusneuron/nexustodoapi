@@ -4,6 +4,6 @@
     public interface IRabbitMQPublisher
     {
         Task PublishMessageAsync<T>(T message, string queueName);
-        public void SendStkResponseMessage<T>(T message);
+        Task SendStkResponseMessage<T>(T message);
     }
 }

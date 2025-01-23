@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
+using Newtonsoft.Json;
 using RestSharp;
+using System.Text;
 using TodoAPI.Interfaces;
+using TodoAPI.MessageBroker;
 using TodoAPI.MessageBroker.Services;
 using TodoAPI.Models;
 using TodoAPI.Services;
@@ -28,13 +33,15 @@ namespace TodoAPI.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMpesaServices _mpesaservice;
         private readonly IRabbitMQPublisher _rabbitMQPublisher;
+        private readonly IRabbitMQConsumer _rabbitMQConsumer;
 
-        public TodoItemsController(ITodoRepository todoRepository, ApplicationDbContext context, IMpesaServices mpepe, IRabbitMQPublisher rabbitMQPublisher)
+        public TodoItemsController(ITodoRepository todoRepository, ApplicationDbContext context, IMpesaServices mpepe, IRabbitMQPublisher rabbitMQPublisher, IRabbitMQConsumer rabbitMQConsumer)
         {
             _todoRepository = todoRepository;
             _context = context;
             _mpesaservice = mpepe;
             _rabbitMQPublisher = rabbitMQPublisher;
+            _rabbitMQConsumer = rabbitMQConsumer;
         }
         #endregion
 
@@ -46,6 +53,28 @@ namespace TodoAPI.Controllers
             return Ok(_context.TodoItems.ToList());
         }
         #endregion
+
+        public class Root
+        {
+            public string MerchantRequestID { get; set; }
+            public string CheckoutRequestID { get; set; }
+            public string ResponseCode { get; set; }
+            public string ResponseDescription { get; set; }
+            public string CustomerMessage { get; set; }
+        }
+
+        public async Task ConfirmPayment(string encodedphoneMerchant)
+        {
+            Console.WriteLine("Reading from messaging QUEUE after saving to DB");
+
+            await Task.Delay(60 * 1000);
+
+            await _rabbitMQConsumer.ConsumeMessageAsync(encodedphoneMerchant);
+
+
+            Console.WriteLine("Read from ConfirmPayment method");
+        }
+
 
         #region snippetCreate
         [HttpPost]
@@ -78,18 +107,80 @@ namespace TodoAPI.Controllers
 
                 //Console.WriteLine(response.Content);
 
+
+                ////CtoBRegisterURL
+                var ctobresponse = await _mpesaservice.CtoBRegisterURL();
+                Console.WriteLine(ctobresponse.Content);
+
+
+                ////STK Push
                 var response = await _mpesaservice.stkpush();
 
 
+                //Stream reader RAW FROM HTTP REQUEST
+                //using var reader = new StreamReader(HttpContext.Request.Body);
+                // You now have the body string raw
+                //var body = await reader.ReadToEndAsync();
+
+                //Get merchant ID
+                Root requestResponse = JsonConvert.DeserializeObject<Root>(response.Content);
+                String merchantID = requestResponse.MerchantRequestID;
+
+                //encode phone + amount
+                int amount = 1;
+                string phone = "254717904391";
+                string accNO = "CompanyXLTD";
+
+
+                byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);
+                String _encodedamtAccNo = System.Convert.ToBase64String(_amtAccNo);
+
+
+                //encoded phone merchantID
+                //byte[] _phoneMerchant = Encoding.UTF8.GetBytes(phone + merchantID);
+                //String _encodedphoneMerchant = System.Convert.ToBase64String(_phoneMerchant);
+
+                RabbitMQQueues queueTitle = new RabbitMQQueues();
+                //queueTitle.QueueTitle = response.Content.Count().ToString();
+                queueTitle.QueueTitle = _encodedamtAccNo;
+
+                Console.WriteLine(queueTitle.QueueTitle);
+
+                //await ConfirmPayment(_encodedphoneMerchant);
+
                 //send the inserted product data to the queue and consumer will listening this data from queue
-                _rabbitMQPublisher.SendStkResponseMessage(response.Content);
+                //await _rabbitMQPublisher.SendStkResponseMessage(response.Content);
+
+
+                //Console.WriteLine("PUBLISHING TO QUEUE");
+                //post to queue and read from queue
+                //await _rabbitMQPublisher.PublishMessageAsync(response.Content, queueTitle.QueueTitle);
+
+                Console.WriteLine("writing to db first");
+
+
+                //Console.WriteLine(response.Content);
 
                 _context.TodoItems.Add(item);
                 await _context.SaveChangesAsync();
                 //_context.SaveChanges();
+
+
+                Console.WriteLine("Calling ConfirmPayment method");
+
+                try
+                {
+                    ConfirmPayment(_encodedamtAccNo);
+                    //await _rabbitMQConsumer.ConsumeMessageAsync(queueTitle.QueueTitle);
+                }
+                catch (Exception)
+                {
+
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return BadRequest(ErrorCode.CouldNotCreateItem.ToString());
             }
             return Ok(item);

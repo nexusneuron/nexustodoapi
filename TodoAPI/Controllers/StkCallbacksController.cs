@@ -4,6 +4,7 @@ using Microsoft.DotNet.MSIdentity.Shared;
 using Newtonsoft.Json;
 using NuGet.Protocol;
 using RestSharp;
+using System.Text;
 using System.Text.Json.Nodes;
 using TodoAPI.MessageBroker;
 using TodoAPI.MessageBroker.Services;
@@ -82,9 +83,9 @@ namespace TodoAPI.Controllers
             // You now have the body string raw
             var body = await reader.ReadToEndAsync();
 
-            var bodyjson = body.ToJson();
 
             Console.WriteLine(body);
+
 
             // As well as a bound model
             //var request = JsonConvert.DeserializeObject<StkCallbackPartial>(bodyjson);
@@ -110,7 +111,7 @@ namespace TodoAPI.Controllers
                 MerchantRequestID = request.Body.stkCallback.MerchantRequestID,
                 MpesaReceiptNumber = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString(),
                 //Name = jsonrespo.Name,
-                //PhoneNumber = PhoneNumber from model,
+                PhoneNumber = long.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("PhoneNumber")).Value.ToString()),
                 //TransactionDate = TransactionDate from model,
                 //TransactionDesc = TransactionDesc from model,
             };
@@ -119,11 +120,32 @@ namespace TodoAPI.Controllers
             //Console.WriteLine(jsonrespo);
             Console.WriteLine(stkresponse.AccountReference);
 
+
+            //DB
             _context.SktCallback.Add(stkresponse);
             await _context.SaveChangesAsync();
 
+            //encode phone + amount //PHONE+MERCHANTREQUESTDID
+            int amount = int.Parse(stkresponse.Amount.ToString());
+            string phone = stkresponse.PhoneNumber.ToString();
+            string merchantID = stkresponse.MerchantRequestID;
+            string accNO = "CompanyXLTD";
+
+
+            byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);
+            String _encodedamtAccNo = System.Convert.ToBase64String(_amtAccNo);
+
+
+            RabbitMQQueues queueTitle = new RabbitMQQueues();
+            //queueTitle.QueueTitle = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString();
+            queueTitle.QueueTitle = _encodedamtAccNo;
+
+
             // publish order validation data
-            await _rabbitMQPublisher.PublishMessageAsync(request.Body, RabbitMQQueues.stkcallbackqueue);
+            //await _rabbitMQPublisher.PublishMessageAsync(request.Body, RabbitMQQueues.stkcallbackqueue);
+            await _rabbitMQPublisher.PublishMessageAsync(request.Body, queueTitle.QueueTitle);
+
+            //await _rabbitMQConsumer.ConsumeMessageAsync(queueTitle.QueueTitle);
 
             return NoContent();
         }
