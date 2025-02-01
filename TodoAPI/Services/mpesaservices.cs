@@ -289,6 +289,85 @@ namespace TodoAPI.Services
 
         }
 
+        public class c2bsim
+        {
+            public int ShortCode { get; set; }
+            public string CommandID { get; set; }
+            public int Amount { get; set; }
+            public long Msisdn { get; set; }
+            public string BillRefNumber { get; set; }
+        }
+
+        public async Task<RestResponse> c2bsimulate()
+        {
+            string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate";
+
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest();
+            request.Method = RestSharp.Method.Post;
+
+            var getaccesstoken = await oauth2();
+
+            if (getaccesstoken.ErrorException != null)
+            {
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                return getaccesstoken;
+            }
+
+            Console.WriteLine(getaccesstoken.Content);
+
+
+            TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
+            var _accesstoken = typeHere.access_token;
+
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", "Bearer " + _accesstoken);
+
+            Console.WriteLine(_accesstoken);
+
+            DateTime d = DateTime.Now;
+            string dateString = d.ToString("yyyyMMddHHmmss");
+
+            string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+            int shortcode = 600992;
+            byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
+            String _encodedpassword = System.Convert.ToBase64String(_password);
+
+            ////////////////////////////////
+            c2bsim c2b = new c2bsim()
+            {
+                CommandID = _encodedpassword,
+                ShortCode = shortcode,
+                Amount = 1,
+                Msisdn = 254717904391,
+                BillRefNumber = "CompanyXLTD",
+            };
+
+            string jsonstk = JsonConvert.SerializeObject(c2b, Formatting.Indented);
+
+            Console.WriteLine(jsonstk);
+
+            request.AddParameter("application/json", jsonstk, ParameterType.RequestBody);
+            ////////////////////////////////
+
+
+            //Registered URLs
+            await CtoBRegisterURL();
+
+
+            //Simulate c2b confirmation
+            var response = await client.ExecuteAsync(request);
+            if (response.ErrorException != null)
+            {
+                Console.WriteLine(response.ErrorException.Message);
+                return response;
+            }
+
+            Console.WriteLine(response.Content);
+            return response;
+
+        }
+
     }
 }
 

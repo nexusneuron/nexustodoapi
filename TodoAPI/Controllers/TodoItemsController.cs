@@ -108,8 +108,8 @@ namespace TodoAPI.Controllers
                 //Console.WriteLine(response.Content);
 
 
-                ////CtoBRegisterURL
-                var ctobresponse = await _mpesaservice.CtoBRegisterURL();
+                ////CtoBSimulate
+                var ctobresponse = await _mpesaservice.c2bsimulate();
                 Console.WriteLine(ctobresponse.Content);
 
 
