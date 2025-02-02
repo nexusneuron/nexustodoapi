@@ -339,7 +339,7 @@ namespace TodoAPI.Services
                 CommandID = "CustomerPayBillOnline",
                 ShortCode = shortcode,
                 Amount = 1,
-                Msisdn = 254717904391,
+                Msisdn = 254708374149,
                 BillRefNumber = "CompanyXLTD",
             };
 
