@@ -237,7 +237,7 @@ namespace TodoAPI.Services
 
         }
 
-        public async Task<RestResponse> CtoBRegisterURL()
+        public async Task<RestResponse> CtoBRegisterURL(string accesstoken)
         {
             string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
 
@@ -245,22 +245,22 @@ namespace TodoAPI.Services
             var request = new RestRequest();
             request.Method = RestSharp.Method.Post;
 
-            var getaccesstoken = await oauth2();
+            //var getaccesstoken = await oauth2();
 
-            if (getaccesstoken.ErrorException != null)
-            {
-                Console.WriteLine(getaccesstoken.ErrorException.Message);
-                return getaccesstoken;
-            }
+            //if (getaccesstoken.ErrorException != null)
+            //{
+            //    Console.WriteLine(getaccesstoken.ErrorException.Message);
+            //    return getaccesstoken;
+            //}
 
-            Console.WriteLine(getaccesstoken.Content);
+            //Console.WriteLine(getaccesstoken.Content);
 
 
-            TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
-            var _accesstoken = typeHere.access_token;
+            //TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
+            //var _accesstoken = typeHere.access_token;
 
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + _accesstoken);
+            request.AddHeader("Authorization", "Bearer " + accesstoken);
 
             ctoburl ctob = new ctoburl()
             {
@@ -325,18 +325,18 @@ namespace TodoAPI.Services
 
             Console.WriteLine(_accesstoken);
 
-            DateTime d = DateTime.Now;
-            string dateString = d.ToString("yyyyMMddHHmmss");
+            //DateTime d = DateTime.Now;
+            //string dateString = d.ToString("yyyyMMddHHmmss");
 
-            string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+            //string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
             int shortcode = 600992;
-            byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
-            String _encodedpassword = System.Convert.ToBase64String(_password);
+            //byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
+            //String _encodedpassword = System.Convert.ToBase64String(_password);
 
             ////////////////////////////////
             c2bsim c2b = new c2bsim()
             {
-                CommandID = _encodedpassword,
+                CommandID = "CustomerPayBillOnline",
                 ShortCode = shortcode,
                 Amount = 1,
                 Msisdn = 254717904391,
@@ -352,7 +352,7 @@ namespace TodoAPI.Services
 
 
             //Registered URLs
-            await CtoBRegisterURL();
+            await CtoBRegisterURL(_accesstoken);
 
 
             //Simulate c2b confirmation

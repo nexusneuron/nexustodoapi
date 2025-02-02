@@ -9,7 +9,7 @@ namespace TodoAPI.Interfaces
 
         Task<RestResponse> stkpush();
 
-        Task<RestResponse> CtoBRegisterURL();
+        Task<RestResponse> CtoBRegisterURL(string accesstoken);
 
         Task<RestResponse> c2bsimulate();
     }
