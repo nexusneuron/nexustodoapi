@@ -50,45 +50,45 @@ namespace TodoAPI.MessageBroker.Services
 
             //if (consumer.Channel.MessageCountAsync(queueName).IsCompletedSuccessfully)
             //{
-                //consumer.ReceivedAsync += async (model, ea) =>
-                //consumer.ReceivedAsync += async (model, ea) =>
-                //{
-                    //var body = ea.Body.ToArray();
-                    //var message = Encoding.UTF8.GetString(body);
+            //consumer.ReceivedAsync += async (model, ea) =>
+            //consumer.ReceivedAsync += async (model, ea) =>
+            //{
+            //var body = ea.Body.ToArray();
+            //var message = Encoding.UTF8.GetString(body);
 
-                    //Console.WriteLine("Read from Queue INSIDE");
+            //Console.WriteLine("Read from Queue INSIDE");
 
-                    //Console.WriteLine(message);
-
-
-                    // Send an acknowledgement to RabbitMQ
-                    //await channel.BasicAckAsync(ea.DeliveryTag, false);
+            //Console.WriteLine(message);
 
 
-                    //bool processedSuccessfully = false;
-                    //try
-                    //{
+            // Send an acknowledgement to RabbitMQ
+            //await channel.BasicAckAsync(ea.DeliveryTag, false);
 
-                    //processedSuccessfully = await JsonConvert.DeserializeObject<dynamic>(message);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    //_logger.LogError($"Exception occurred while processing message from queue {queueName}: {ex}");
-                    //    Console.WriteLine("Exception occurred while processing message from queue {queueName}: {ex}");
-                    //}
 
-                    //if (processedSuccessfully)
-                    //{
-                        //await _rabbitMQPublisher.PublishMessageAsync(message, "queueTitle.QueueTitle");
-                        //await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
-                    //}
-                    //else
-                    //{
-                    //    await channel.BasicRejectAsync(deliveryTag: ea.DeliveryTag, requeue: true);
-                    //}
-                //};
+            //bool processedSuccessfully = false;
+            //try
+            //{
 
-                //await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+            //processedSuccessfully = await JsonConvert.DeserializeObject<dynamic>(message);
+            //}
+            //catch (Exception ex)
+            //{
+            //    //_logger.LogError($"Exception occurred while processing message from queue {queueName}: {ex}");
+            //    Console.WriteLine("Exception occurred while processing message from queue {queueName}: {ex}");
+            //}
+
+            //if (processedSuccessfully)
+            //{
+            //await _rabbitMQPublisher.PublishMessageAsync(message, "queueTitle.QueueTitle");
+            //await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
+            //}
+            //else
+            //{
+            //    await channel.BasicRejectAsync(deliveryTag: ea.DeliveryTag, requeue: true);
+            //}
+            //};
+
+            //await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
 
             //}
             //else
@@ -104,35 +104,35 @@ namespace TodoAPI.MessageBroker.Services
 
                 Console.WriteLine("Read from Queue INSIDE");
 
-				Console.WriteLine(message);
+                Console.WriteLine(message);
 
 
-            //    // Send an acknowledgement to RabbitMQ
+                //    // Send an acknowledgement to RabbitMQ
                 await channel.BasicAckAsync(ea.DeliveryTag, false);
 
 
-            //    bool processedSuccessfully = false;
-            //    try
-            //    {
+                //    bool processedSuccessfully = false;
+                //    try
+                //    {
 
-            //        processedSuccessfully = await JsonConvert.DeserializeObject<dynamic>(message);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        //_logger.LogError($"Exception occurred while processing message from queue {queueName}: {ex}");
-            //        Console.WriteLine("Exception occurred while processing message from queue {queueName}: {ex}");
-            //    }
+                //        processedSuccessfully = await JsonConvert.DeserializeObject<dynamic>(message);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        //_logger.LogError($"Exception occurred while processing message from queue {queueName}: {ex}");
+                //        Console.WriteLine("Exception occurred while processing message from queue {queueName}: {ex}");
+                //    }
 
-            //    if (processedSuccessfully)
-            //    {
-            //        await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
-            //    }
-            //    else
-            //    {
-            //        await channel.BasicRejectAsync(deliveryTag: ea.DeliveryTag, requeue: true);
-            //    }
-            //};
-
+                //    if (processedSuccessfully)
+                //    {
+                //        await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
+                //    }
+                //    else
+                //    {
+                //        await channel.BasicRejectAsync(deliveryTag: ea.DeliveryTag, requeue: true);
+                //    }
+                //};
+            };
             await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
 
         }
