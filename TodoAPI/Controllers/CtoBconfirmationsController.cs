@@ -67,6 +67,7 @@ namespace TodoAPI.Controllers
             var body = await reader.ReadToEndAsync();
 
 
+            Console.WriteLine("i have hit ctob");
             Console.WriteLine(body);
 
 
@@ -85,13 +86,16 @@ namespace TodoAPI.Controllers
             }
 
             Console.WriteLine(request.InvoiceNumber);
+			Console.WriteLine(request.BillRefNumber);
+			Console.WriteLine(request.InvoiceNumber);
+			Console.WriteLine(request.BillRefNumber);
 
 
             TodoAPI.Models.NexuspayConfirmation ctobresponse = new TodoAPI.Models.NexuspayConfirmation()
             {
                 TransAmount = int.Parse(request.TransAmount.ToString()),
                 BillRefNumber = request.BillRefNumber,
-                //AccountReference =   TransactionDate from model //Account number  //check if amts under this account reference total with invoice
+                TransID = request.TransID,
                 //Amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString()),
                 //CheckoutRequestID = request.Body.stkCallback.CheckoutRequestID,
                 //MpesaReceiptNumber = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString(),
@@ -103,7 +107,8 @@ namespace TodoAPI.Controllers
 
 
             Console.WriteLine(ctobresponse.TransID);
-
+            Console.WriteLine(ctobresponse.TransID);
+			Console.WriteLine(ctobresponse.TransID);
 
             //DB
             _context.NexuspayConfirmation.Add(ctobresponse);
