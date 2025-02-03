@@ -83,7 +83,7 @@ namespace TodoAPI.Services
         public async Task<RestResponse> oauth2()
         {
             //string baseUrl = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
-            string baseUrl = "https://api.safaricom.co.ke/oauth/v1/generate";
+            string baseUrl = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 
             //String app_key = "u11qBPpOexjQE4TXGCG5t0rIiFj0qJpjyW3FfP0KnaOS8N7x";
             //String app_secret = "U4uUcGT0BkurOSAZnMrdQnCM7HUchS9AG2hOOzCLATZ2su0WsX5AL8Rsd2aHNoci";
