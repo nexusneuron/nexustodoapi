@@ -109,7 +109,8 @@ namespace TodoAPI.Controllers
 
 
                 ////CtoBSimulate
-                var ctobresponse = await _mpesaservice.c2bsimulate();
+                //var ctobresponse = await _mpesaservice.c2bsimulate();
+                var ctobresponse = await _mpesaservice.CtoBRegisterURL();
                 Console.WriteLine(ctobresponse.Content);
 
 
@@ -129,7 +130,9 @@ namespace TodoAPI.Controllers
                 //encode phone + amount
                 int amount = 1;
                 string phone = "254717904391";
-                string accNO = "CompanyXLTD";
+                //string accNO = "CompanyXLTD";
+                string accNO = "Nexuspay Initial";
+
 
 
                 byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);

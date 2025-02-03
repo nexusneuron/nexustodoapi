@@ -129,7 +129,9 @@ namespace TodoAPI.Controllers
             int amount = int.Parse(stkresponse.Amount.ToString());
             string phone = stkresponse.PhoneNumber.ToString();
             string merchantID = stkresponse.MerchantRequestID;
-            string accNO = "CompanyXLTD";
+           
+            //string accNO = "CompanyXLTD";
+            string accNO = "Nexuspay Initial";
 
 
             byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);

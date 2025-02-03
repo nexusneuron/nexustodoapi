@@ -82,10 +82,14 @@ namespace TodoAPI.Services
 
         public async Task<RestResponse> oauth2()
         {
-            string baseUrl = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+            //string baseUrl = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+            string baseUrl = "https://api.safaricom.co.ke/oauth/v1/generate";
 
-            String app_key = "u11qBPpOexjQE4TXGCG5t0rIiFj0qJpjyW3FfP0KnaOS8N7x";
-            String app_secret = "U4uUcGT0BkurOSAZnMrdQnCM7HUchS9AG2hOOzCLATZ2su0WsX5AL8Rsd2aHNoci";
+            //String app_key = "u11qBPpOexjQE4TXGCG5t0rIiFj0qJpjyW3FfP0KnaOS8N7x";
+            //String app_secret = "U4uUcGT0BkurOSAZnMrdQnCM7HUchS9AG2hOOzCLATZ2su0WsX5AL8Rsd2aHNoci";
+
+            String app_key = "myS6LRlWIU5a932YTdTpdc2mWorS8B76LPpGNqPw07HptRGo";
+            String app_secret = "ACKsHFhGDfGkCKXC2rzANX0YGzJN9H1Q33hJwIrgG0iAUPfRkN25M3EEd8UrFqKo";
 
             byte[] auth = Encoding.UTF8.GetBytes(app_key + ":" + app_secret);
             String encoded = System.Convert.ToBase64String(auth);
@@ -142,7 +146,9 @@ namespace TodoAPI.Services
 
         public async Task<RestResponse> stkpush()
         {
-            string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+            //string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+            string baseUrl = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+
 
             var client = new RestClient(baseUrl);
             var request = new RestRequest();
@@ -170,8 +176,12 @@ namespace TodoAPI.Services
             DateTime d = DateTime.Now;
             string dateString = d.ToString("yyyyMMddHHmmss");
 
-            string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
-            int shortcode = 174379;
+            //string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+            string passkey = "6b4ef1cdca85cb784b049776727e927d73dcdcd717444e51a53e0e7579e5dad6";
+
+            //int shortcode = 174379;
+            int shortcode = 5142254;
+
             byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
             String _encodedpassword = System.Convert.ToBase64String(_password);
 
@@ -186,9 +196,11 @@ namespace TodoAPI.Services
                 PartyB = shortcode,
                 PhoneNumber = 254717904391,
                 //CallBackURL = "https://buzzard-hip-donkey.ngrok-free.app/api/stkcallbacks",
-                CallBackURL = "https://testsite.nexusneuron.com/api/stkcallbacks",
-                AccountReference = "CompanyXLTD",
-                TransactionDesc = "Payment of X"
+                //CallBackURL = "https://testsite.nexusneuron.com/api/stkcallbacks",
+                CallBackURL = "https://nexuspay.nexusneuron.com/api/stkcallbacks",
+
+                AccountReference = "Nexuspay Initial",
+                TransactionDesc = "Initial Nexuspay Prod"
             };
 
             string jsonstk = JsonConvert.SerializeObject(stk, Formatting.Indented);
@@ -237,39 +249,47 @@ namespace TodoAPI.Services
 
         }
 
-        public async Task<RestResponse> CtoBRegisterURL(string accesstoken)
+        //public async Task<RestResponse> CtoBRegisterURL(string accesstoken)
+        public async Task<RestResponse> CtoBRegisterURL()
         {
-            string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+            //string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+            string baseUrl = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+
 
             var client = new RestClient(baseUrl);
             var request = new RestRequest();
             request.Method = RestSharp.Method.Post;
 
-            //var getaccesstoken = await oauth2();
+            var getaccesstoken = await oauth2();
 
-            //if (getaccesstoken.ErrorException != null)
-            //{
-            //    Console.WriteLine(getaccesstoken.ErrorException.Message);
-            //    return getaccesstoken;
-            //}
+            if (getaccesstoken.ErrorException != null)
+            {
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                return getaccesstoken;
+            }
 
-            //Console.WriteLine(getaccesstoken.Content);
+            Console.WriteLine(getaccesstoken.Content);
 
 
-            //TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
-            //var _accesstoken = typeHere.access_token;
+            TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
+            var _accesstoken = typeHere.access_token;
 
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + accesstoken);
+            request.AddHeader("Authorization", "Bearer " + _accesstoken);
 
             ctoburl ctob = new ctoburl()
             {
-                ShortCode = 600989,
+                //ShortCode = 600989,
+                ShortCode = 5142254,
+
                 ResponseType = "Completed",
                 //ConfirmationURL = "https://buzzard-hip-donkey.ngrok-free.app/api/ctobconfirmations",
                 //ValidationURL = "https://buzzard-hip-donkey.ngrok-free.app",
-                ConfirmationURL = "https://testsite.nexusneuron.com/api/ctobconfirmations",
-                ValidationURL = "https://testsite.nexusneuron.com",
+                //ConfirmationURL = "https://testsite.nexusneuron.com/api/ctobconfirmations",
+                //ValidationURL = "https://testsite.nexusneuron.com",
+
+                ConfirmationURL = "https://nexuspay.nexusneuron.com/api/ctobconfirmations",
+                ValidationURL = "https://nexuspay.nexusneuron.com",
             };
 
             string jsonctob = JsonConvert.SerializeObject(ctob, Formatting.Indented);
@@ -352,7 +372,9 @@ namespace TodoAPI.Services
 
 
             //Registered URLs
-            await CtoBRegisterURL(_accesstoken);
+            //await CtoBRegisterURL(_accesstoken);
+            await CtoBRegisterURL();
+
 
 
             //Simulate c2b confirmation
