@@ -147,7 +147,7 @@ namespace TodoAPI.Services
         public async Task<RestResponse> stkpush()
         {
             //string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
-            string baseUrl = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+            string baseUrl = "https://api.safaricom.co.ke/mpesa/stkpush/v2/processrequest";
 
 
             var client = new RestClient(baseUrl);
@@ -253,7 +253,7 @@ namespace TodoAPI.Services
         public async Task<RestResponse> CtoBRegisterURL()
         {
             //string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
-            string baseUrl = "https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+            string baseUrl = "https://api.safaricom.co.ke/mpesa/c2b/v2/registerurl";
 
 
             var client = new RestClient(baseUrl);
