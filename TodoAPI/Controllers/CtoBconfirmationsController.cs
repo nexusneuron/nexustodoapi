@@ -116,7 +116,7 @@ namespace TodoAPI.Controllers
 
 
             //encode phone + amount //PHONE+MERCHANTREQUESTDID
-            int amount = int.Parse(ctobresponse.TransAmount.ToString());
+            string amount = ctobresponse.TransAmount;
             string phone = ctobresponse.MSISDN.ToString();
             string accNO = ctobresponse.BillRefNumber;
 
