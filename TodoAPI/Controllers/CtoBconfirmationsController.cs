@@ -116,7 +116,13 @@ namespace TodoAPI.Controllers
 
 
             //encode phone + amount //PHONE+MERCHANTREQUESTDID
-            string amount = ctobresponse.TransAmount;
+            int i = (int)float.Truncate(float.Parse(ctobresponse.TransAmount));
+            string amount = i.ToString();
+
+            Console.WriteLine("ctobresponse.TransAmount   float  to  truncated zero decimal int then string");
+            Console.WriteLine(i);
+
+            //string amount = ctobresponse.TransAmount;
             //string transID = ctobresponse.TransID;
             string accNO = ctobresponse.BillRefNumber;
 
