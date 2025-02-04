@@ -48,14 +48,14 @@ namespace TodoAPI.Migrations
                     b.Property<string>("MiddleName")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal?>("OrgAccountBalance")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<string>("OrgAccountBalance")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ThirdPartyTransID")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("TransAmount")
-                        .HasColumnType("int");
+                    b.Property<string>("TransAmount")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("TransTime")
                         .HasColumnType("datetime(6)");

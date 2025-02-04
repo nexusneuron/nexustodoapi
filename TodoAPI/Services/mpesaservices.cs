@@ -208,20 +208,6 @@ namespace TodoAPI.Services
             Console.WriteLine(jsonstk);
 
 
-            //string json = @"{
-            //                    ""BusinessShortCode"": 174379,
-            //                    //""Password"": ""MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjQxMjE3MTQ0ODQ2"",
-            //                    ""Timestamp"": ""DateTime.Now"",
-            //                    ""TransactionType"": ""CustomerPayBillOnline"",
-            //                    ""Amount"": 1,
-            //                    ""PartyA"": 254708374149,
-            //                    ""PartyB"": 174379,
-            //                    ""PhoneNumber"": 254708374149,
-            //                    ""CallBackURL"": ""https://mydomain.com/path"",
-            //                    ""AccountReference"": ""CompanyXLTD"",
-            //                    ""TransactionDesc"": ""Payment of X""
-            //                  }";
-
             request.AddParameter("application/json", jsonstk ,  ParameterType.RequestBody);
             ////////////////////////////////
 

@@ -93,7 +93,7 @@ namespace TodoAPI.Controllers
 
             TodoAPI.Models.NexuspayConfirmation ctobresponse = new TodoAPI.Models.NexuspayConfirmation()
             {
-                TransAmount = int.Parse(request.TransAmount.ToString()),
+                TransAmount = request.TransAmount,
                 BillRefNumber = request.BillRefNumber,
                 TransID = request.TransID,
                 //Amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString()),
