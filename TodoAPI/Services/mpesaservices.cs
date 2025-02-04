@@ -147,7 +147,7 @@ namespace TodoAPI.Services
         public async Task<RestResponse> stkpush()
         {
             //string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
-            string baseUrl = "https://api.safaricom.co.ke/mpesa/stkpush/v2/processrequest";
+            string baseUrl = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
 
 
             var client = new RestClient(baseUrl);
@@ -166,7 +166,7 @@ namespace TodoAPI.Services
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
-            var _accesstoken = typeHere.access_token;
+            string _accesstoken = typeHere.access_token;
 
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + _accesstoken);
@@ -199,8 +199,8 @@ namespace TodoAPI.Services
                 //CallBackURL = "https://testsite.nexusneuron.com/api/stkcallbacks",
                 CallBackURL = "https://nexuspay.nexusneuron.com/api/stkcallbacks",
 
-                AccountReference = "Nexuspay Initial",
-                TransactionDesc = "Initial Nexuspay Prod"
+                AccountReference = "NexuspayIni",
+                TransactionDesc = "NexuspayPro"
             };
 
             string jsonstk = JsonConvert.SerializeObject(stk, Formatting.Indented);
@@ -229,6 +229,9 @@ namespace TodoAPI.Services
             if (response.ErrorException != null)
             {
                 Console.WriteLine(response.ErrorException.Message);
+				Console.WriteLine(response.ErrorMessage);
+				Console.WriteLine(response.StatusCode);
+				Console.WriteLine(response.Content);
                 return response;
             }
 

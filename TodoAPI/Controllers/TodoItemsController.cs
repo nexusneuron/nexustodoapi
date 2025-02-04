@@ -110,13 +110,22 @@ namespace TodoAPI.Controllers
 
                 ////CtoBSimulate
                 //var ctobresponse = await _mpesaservice.c2bsimulate();
-                var ctobresponse = await _mpesaservice.CtoBRegisterURL();
-                Console.WriteLine(ctobresponse.Content);
+                //var ctobresponse = await _mpesaservice.CtoBRegisterURL();
+                //Console.WriteLine(ctobresponse.Content);
 
 
                 ////STK Push
                 var response = await _mpesaservice.stkpush();
 
+
+				Console.WriteLine("expectin response read within todoitems controller");
+				if (response.ErrorException != null)
+				{
+					Console.WriteLine(response.ErrorException.Message);
+					Console.WriteLine(response.ErrorMessage);
+					Console.WriteLine(response.StatusCode);
+					Console.WriteLine(response.Content);
+				}
 
                 //Stream reader RAW FROM HTTP REQUEST
                 //using var reader = new StreamReader(HttpContext.Request.Body);
@@ -131,7 +140,7 @@ namespace TodoAPI.Controllers
                 int amount = 1;
                 string phone = "254717904391";
                 //string accNO = "CompanyXLTD";
-                string accNO = "Nexuspay Initial";
+                string accNO = "NexuspayIni";
 
 
 
