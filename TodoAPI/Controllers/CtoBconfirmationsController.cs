@@ -117,10 +117,10 @@ namespace TodoAPI.Controllers
 
             //encode phone + amount //PHONE+MERCHANTREQUESTDID
             string amount = ctobresponse.TransAmount;
-            string phone = ctobresponse.MSISDN.ToString();
+            //string transID = ctobresponse.TransID;
             string accNO = ctobresponse.BillRefNumber;
 
-            byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO + phone);
+            byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);
             String _encodedamtAccNo = System.Convert.ToBase64String(_amtAccNo);
 
 
