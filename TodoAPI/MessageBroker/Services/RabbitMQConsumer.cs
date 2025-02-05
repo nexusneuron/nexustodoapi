@@ -96,7 +96,7 @@ namespace TodoAPI.MessageBroker.Services
                 Port = _rabbitMqSetting.Port
             };
 
-            //Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR.    DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED");
+            Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR.    DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED");
 
             //DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED      B4 CONSUMING  CONSTRUCTING QUEUE CONN
             await Task.Delay(30 * 1000);
@@ -106,14 +106,14 @@ namespace TodoAPI.MessageBroker.Services
             await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
 
-            //Console.WriteLine("QUEUE DECLARED");
-            //Console.WriteLine(queueName);
+            Console.WriteLine("QUEUE DECLARED");
+            Console.WriteLine(queueName);
             ////
 
 
             var consumer = new AsyncEventingBasicConsumer(channel);
 
-            //Console.WriteLine("Reached INSIDE");
+            Console.WriteLine("Reached INSIDE");
 
             ////
 
@@ -133,7 +133,7 @@ namespace TodoAPI.MessageBroker.Services
                     //Message is from Confirmation URL
                     if (requestCallback.Body.stkCallback == null)
                     {
-                        //Console.WriteLine("Message is from Confirmation URL");
+                        Console.WriteLine("Message is from Confirmation URL");
 
                         //Deserialize RootConfirmation Display this message only
                         Console.WriteLine(requestConfirmation.FirstName);
@@ -144,7 +144,7 @@ namespace TodoAPI.MessageBroker.Services
                     else
                     {
                         //Deserialized RootCallback Display this message only
-                        //Console.WriteLine("Message is from Callback URL");
+                        Console.WriteLine("Message is from Callback URL");
                         Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
                         bool value = true;
 
@@ -169,9 +169,9 @@ namespace TodoAPI.MessageBroker.Services
                     //Message is from Confirmation URL
                     if (message2 != null && requestConfirmation != null)
                     {
-                        //Console.WriteLine("Message is from Confirmation URL");
+                        Console.WriteLine("Message is from Confirmation URL");
 
-                        //Console.WriteLine(requestConfirmation.FirstName);
+                        Console.WriteLine(requestConfirmation.FirstName);
                         bool value = true;
 
                         string value2 = message2;
@@ -179,8 +179,8 @@ namespace TodoAPI.MessageBroker.Services
                     else if (message2 != null && requestCallback.Body.stkCallback != null)
                     {
                         //Deserialized RootCallback Display this message only
-                        //Console.WriteLine("Message is from Callback URL");
-                        //Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+                        Console.WriteLine("Message is from Callback URL");
+                        Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
                         bool value = true;
 
                         string value2 = message2;
@@ -211,9 +211,9 @@ namespace TodoAPI.MessageBroker.Services
             //use merchantID as queueName
             await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-            //Console.WriteLine("QUEUE 2 DECLARED");
+            Console.WriteLine("QUEUE 2 DECLARED");
             //use merchantID as queueName
-            //Console.WriteLine(merchantID);
+            Console.WriteLine(merchantID);
 
             var consumer2 = new AsyncEventingBasicConsumer(channel2);
 
@@ -222,17 +222,17 @@ namespace TodoAPI.MessageBroker.Services
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                //Console.WriteLine("Read from Queue INSIDE");
+                Console.WriteLine("Read from Queue INSIDE");
 
-                //Console.WriteLine(message);
+                Console.WriteLine(message);
 
 
                 if (message != null)
                 {
-                    //Console.WriteLine("Message is from merchantID error");
+                    Console.WriteLine("Message is from merchantID error");
 
                     //Deserialize RootConfirmation Display this message only
-                    //Console.WriteLine(message);
+                    Console.WriteLine(message);
 
                     bool value = false;
 
@@ -323,7 +323,7 @@ namespace TodoAPI.MessageBroker.Services
 //    catch (Exception ex)
 //    {
 //        //_logger.LogError($"Exception occurred while processing message from queue {queueName}: {ex}");
-//        //Console.WriteLine("Exception occurred while processing message from queue {queueName}: {ex}");
+//        Console.WriteLine("Exception occurred while processing message from queue {queueName}: {ex}");
 //    }
 
 //    if (processedSuccessfully)

@@ -6,7 +6,7 @@
 
         [Key]
         public string? TransID { get; set; }  // "TransID":"RKTQDM7W6S",
-        public DateTime? TransTime { get; set; }   // "TransTime":"20191122063845",
+        public string? TransTime { get; set; }   // "TransTime":"20191122063845",
         public string? TransAmount { get; set; }   //   int "TransAmount":"10"
         public string? BusinessShortCode { get; set; }  //   "BusinessShortCode": "600638",
         public string? BillRefNumber { get; set; }   //   "BillRefNumber":"invoice008",

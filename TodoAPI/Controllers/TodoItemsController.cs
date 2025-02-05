@@ -66,7 +66,7 @@ namespace TodoAPI.Controllers
         //Read message from Message Queue
         public async Task<IActionResult> ConfirmPayment(string _encodedamtTime, string merchantID)
         {
-            //Console.WriteLine("Reading from messaging QUEUE after saving to DB.    DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT");
+            Console.WriteLine("Reading from messaging QUEUE after saving to DB.    DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT");
 
             //DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT      B4 CONSUMING   QUEUE
             await Task.Delay(60 * 1000);
@@ -87,7 +87,7 @@ namespace TodoAPI.Controllers
             return BadRequest(response);
             //user to retry
 
-            //Console.WriteLine("Read from ConfirmPayment method");
+            Console.WriteLine("Read from ConfirmPayment method");
         }
 
 
@@ -113,14 +113,14 @@ namespace TodoAPI.Controllers
 
                 //mpesaservice oauth();
                 //var response = await _mpesaservice.oauth2();
-                ////Console.WriteLine(response.Content);
+                //Console.WriteLine(response.Content);
 
 
                 ////CtoBSimulate
                 //var ctobresponse = await _mpesaservice.c2bsimulate();
                 ////CtoBRegisterURL
                 //var ctobresponse = await _mpesaservice.CtoBRegisterURL();
-                ////Console.WriteLine(ctobresponse.Content);
+                //Console.WriteLine(ctobresponse.Content);
 
 
                 ////STK Push OBJECTS
@@ -149,7 +149,7 @@ namespace TodoAPI.Controllers
                 var response = await _mpesaservice.stkpush(businessShortcode, amount, partyA, accNO, TransTime, PartyB, PhoneNumber, CallBackURL,  TransactionDesc, passkey);
 
 
-				//Console.WriteLine("expectin response read within todoitems controller    IF HAS ERROR USER IS NOTIFIED TO RETRY IN A MIN");
+				Console.WriteLine("expectin response read within todoitems controller    IF HAS ERROR USER IS NOTIFIED TO RETRY IN A MIN");
 				if (response.ErrorException != null)
 				{
 					Console.WriteLine(response.ErrorException.Message);
@@ -198,7 +198,7 @@ namespace TodoAPI.Controllers
                 await _context.SaveChangesAsync();
 
 
-                //Console.WriteLine("Calling ConfirmPayment method");
+                Console.WriteLine("Calling ConfirmPayment method");
 
                 try
                 {
@@ -212,7 +212,7 @@ namespace TodoAPI.Controllers
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
                 return BadRequest(ErrorCode.CouldNotCreateItem.ToString());
             }
             return Ok(item);

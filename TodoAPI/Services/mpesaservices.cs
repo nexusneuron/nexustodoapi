@@ -49,7 +49,7 @@ namespace TodoAPI.Services
             request.AddHeader("Authorization", "Basic " + encoded);
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             //RestResponse response = client.Execute(request);
-            ////Console.WriteLine(response.Content);
+            //Console.WriteLine(response.Content);
 
             try
             {
@@ -61,21 +61,21 @@ namespace TodoAPI.Services
                 // Pipes the stream to a higher level stream reader with the required encoding format. 
                 //StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
 
-                ////Console.WriteLine(readStream.ReadToEnd());
+                //Console.WriteLine(readStream.ReadToEnd());
                 //response.Close();
                 //readStream.Close();
                 RestResponse response = client.Execute(request);
                 if (response.ErrorException != null)
                 {
-                    //Console.WriteLine(response.ErrorException.Message);
+                    Console.WriteLine(response.ErrorException.Message);
                     return;
                 }
-                //Console.WriteLine(response.Content);
+                Console.WriteLine(response.Content);
             }
             catch (WebException ex)
             {
                 var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                //Console.WriteLine(resp);
+                Console.WriteLine(resp);
 
             }
         }
@@ -109,11 +109,11 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                //Console.WriteLine(response.ErrorException.Message);
+                Console.WriteLine(response.ErrorException.Message);
                 return response;
             }
 
-            //Console.WriteLine(response.Content);
+            Console.WriteLine(response.Content);
             return response;
 
         }
@@ -161,11 +161,11 @@ namespace TodoAPI.Services
 
             if (getaccesstoken.ErrorException != null)
             {
-                //Console.WriteLine(getaccesstoken.ErrorException.Message);
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
                 return getaccesstoken;
             }
 
-            //Console.WriteLine(getaccesstoken.Content);
+            Console.WriteLine(getaccesstoken.Content);
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
@@ -174,7 +174,7 @@ namespace TodoAPI.Services
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + _accesstoken);
 
-            //Console.WriteLine(_accesstoken);
+            Console.WriteLine(_accesstoken);
 
             //DateTime d = DateTime.Now;
             //string dateString = d.ToString("yyyyMMddHHmmss");
@@ -209,7 +209,7 @@ namespace TodoAPI.Services
 
             string jsonstk = JsonConvert.SerializeObject(stk, Formatting.Indented);
 
-            //Console.WriteLine(jsonstk);
+            Console.WriteLine(jsonstk);
 
 
             request.AddParameter("application/json", jsonstk ,  ParameterType.RequestBody);
@@ -218,14 +218,14 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                //Console.WriteLine(response.ErrorException.Message);
-				//Console.WriteLine(response.ErrorMessage);
-				//Console.WriteLine(response.StatusCode);
-				//Console.WriteLine(response.Content);
+                Console.WriteLine(response.ErrorException.Message);
+				Console.WriteLine(response.ErrorMessage);
+				Console.WriteLine(response.StatusCode);
+				Console.WriteLine(response.Content);
                 return response;
             }
 
-            //Console.WriteLine(response.Content);
+            Console.WriteLine(response.Content);
             return response;
 
         }
@@ -257,11 +257,11 @@ namespace TodoAPI.Services
 
             if (getaccesstoken.ErrorException != null)
             {
-                //Console.WriteLine(getaccesstoken.ErrorException.Message);
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
                 return getaccesstoken;
             }
 
-            //Console.WriteLine(getaccesstoken.Content);
+            Console.WriteLine(getaccesstoken.Content);
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
@@ -293,11 +293,11 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                //Console.WriteLine(response.ErrorException.Message);
+                Console.WriteLine(response.ErrorException.Message);
                 return response;
             }
 
-            //Console.WriteLine(response.Content);
+            Console.WriteLine(response.Content);
             return response;
 
         }
@@ -323,11 +323,11 @@ namespace TodoAPI.Services
 
             if (getaccesstoken.ErrorException != null)
             {
-                //Console.WriteLine(getaccesstoken.ErrorException.Message);
+                Console.WriteLine(getaccesstoken.ErrorException.Message);
                 return getaccesstoken;
             }
 
-            //Console.WriteLine(getaccesstoken.Content);
+            Console.WriteLine(getaccesstoken.Content);
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
@@ -336,7 +336,7 @@ namespace TodoAPI.Services
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + _accesstoken);
 
-            //Console.WriteLine(_accesstoken);
+            Console.WriteLine(_accesstoken);
 
             //DateTime d = DateTime.Now;
             //string dateString = d.ToString("yyyyMMddHHmmss");
@@ -358,7 +358,7 @@ namespace TodoAPI.Services
 
             string jsonstk = JsonConvert.SerializeObject(c2b, Formatting.Indented);
 
-            //Console.WriteLine(jsonstk);
+            Console.WriteLine(jsonstk);
 
             request.AddParameter("application/json", jsonstk, ParameterType.RequestBody);
             ////////////////////////////////
@@ -374,11 +374,11 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                //Console.WriteLine(response.ErrorException.Message);
+                Console.WriteLine(response.ErrorException.Message);
                 return response;
             }
 
-            //Console.WriteLine(response.Content);
+            Console.WriteLine(response.Content);
             return response;
 
         }

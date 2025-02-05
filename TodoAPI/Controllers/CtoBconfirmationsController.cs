@@ -67,8 +67,8 @@ namespace TodoAPI.Controllers
             var body = await reader.ReadToEndAsync();
 
 
-            //Console.WriteLine("i have hit ctob");
-            //Console.WriteLine(body);
+            Console.WriteLine("i have hit ctob");
+            Console.WriteLine(body);
 
 
             // As well as a bound model
@@ -78,7 +78,7 @@ namespace TodoAPI.Controllers
 
             if (request == null)
             {
-                ////Console.WriteLine("request came back empty");
+                //Console.WriteLine("request came back empty");
 
                 //return unsuccesful to user
                 //log error
@@ -92,7 +92,7 @@ namespace TodoAPI.Controllers
                 TransAmount = request.TransAmount,
                 BillRefNumber = request.BillRefNumber,
                 TransID = request.TransID,
-                TransTime = DateTime.Parse(request.TransTime),
+                TransTime = request.TransTime,
                 FirstName = request.FirstName,
                 OrgAccountBalance = request.OrgAccountBalance,
                 BusinessShortCode = request.BusinessShortCode,

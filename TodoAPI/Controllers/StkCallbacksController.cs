@@ -85,7 +85,7 @@ namespace TodoAPI.Controllers
             var body = await reader.ReadToEndAsync();
 
 
-            //Console.WriteLine(body);
+            Console.WriteLine(body);
 
 
             // As well as a bound model
@@ -95,7 +95,7 @@ namespace TodoAPI.Controllers
             if (request.Body.stkCallback.ResultCode != 0)
             {
 
-                //Console.WriteLine(request.Body.stkCallback.ResultDesc);
+                Console.WriteLine(request.Body.stkCallback.ResultDesc);
 
                 var merchantID = request.Body.stkCallback.MerchantRequestID;
 
@@ -113,7 +113,7 @@ namespace TodoAPI.Controllers
                 return NoContent();
             }
 
-            //Console.WriteLine(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value);
+            Console.WriteLine(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value);
 
 
             //encode amount + TRANSTIME
