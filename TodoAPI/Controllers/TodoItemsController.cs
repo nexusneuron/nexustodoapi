@@ -64,14 +64,14 @@ namespace TodoAPI.Controllers
         }
 
         //Read message from Message Queue
-        public async Task<IActionResult> ConfirmPayment(string _encodedamtTime, string merchantID)
+        public async Task<IActionResult> ConfirmPayment(string _encodedamtAcc, string merchantID)
         {
             Console.WriteLine("Reading from messaging QUEUE after saving to DB.    DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT");
 
             //DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT      B4 CONSUMING   QUEUE
             await Task.Delay(60 * 1000);
 
-            var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtTime, merchantID);
+            var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtAcc, merchantID);
 
             if(response.value == true)
             {
@@ -169,15 +169,19 @@ namespace TodoAPI.Controllers
                 String merchantID = requestResponse.MerchantRequestID;
 
 
+                byte[] _amtAcc = Encoding.UTF8.GetBytes(amount + accNO);
+                String _encodedamtAcc = System.Convert.ToBase64String(_amtAcc);
 
-                byte[] _amtTime = Encoding.UTF8.GetBytes(amount + TransTime);
-                String _encodedamtTime = System.Convert.ToBase64String(_amtTime);
+
+                // publish stk response based on amt & transtime
+                RabbitMQQueues queueTitle2 = new RabbitMQQueues();
+                queueTitle2.QueueTitle = _encodedamtAcc;
 
 
                 ////DB TEMPORARY DATA TABLE
                 TempSTKData tempsdkdata = new TempSTKData() 
                 {
-                    AmtTime = _encodedamtTime,
+                    merchantID = merchantID,
                     businessShortcode = businessShortcode,
                     amount = amount,
                     partyA = partyA,
@@ -203,7 +207,7 @@ namespace TodoAPI.Controllers
                 try
                 {
                     //Calling ConfirmPayment method
-                    ConfirmPayment(_encodedamtTime, merchantID);
+                    ConfirmPayment(_encodedamtAcc, merchantID);
                 }
                 catch (Exception)
                 {

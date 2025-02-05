@@ -110,16 +110,17 @@ namespace TodoAPI.Controllers
             //ctobresponse.TransAmount   float  to  truncated zero decimal int then string
             int i = (int)float.Truncate(float.Parse(ctobresponse.TransAmount));
             string amount = i.ToString();
-            string TransTime = ctobresponse.TransTime.ToString();
+            //string TransTime = ctobresponse.TransTime.ToString();
+            string accNo = ctobresponse.BillRefNumber;
 
 
-            byte[] _amtTime = Encoding.UTF8.GetBytes(amount + TransTime);
-            String _encodedamtTime = System.Convert.ToBase64String(_amtTime);
+            byte[] _amtAcc = Encoding.UTF8.GetBytes(amount + accNo);
+            String _encodedamtAcc = System.Convert.ToBase64String(_amtAcc);
 
 
             // publish stk response based on amt & transtime
             RabbitMQQueues queueTitle2 = new RabbitMQQueues();
-            queueTitle2.QueueTitle = _encodedamtTime;
+            queueTitle2.QueueTitle = _encodedamtAcc;
             await _rabbitMQPublisher.PublishMessageAsync(request, queueTitle2.QueueTitle);
 
             return NoContent();

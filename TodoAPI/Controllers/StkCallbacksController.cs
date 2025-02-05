@@ -91,13 +91,14 @@ namespace TodoAPI.Controllers
             // As well as a bound model
             Root request = JsonConvert.DeserializeObject<Root>(body);
 
+
+            var merchantID = request.Body.stkCallback.MerchantRequestID;
+
             //[used to check if a queue exists with the merchantID cos there was an error stk not processed successfuly. logs error.  advises user in display]
             if (request.Body.stkCallback.ResultCode != 0)
             {
 
                 Console.WriteLine(request.Body.stkCallback.ResultDesc);
-
-                var merchantID = request.Body.stkCallback.MerchantRequestID;
 
                 // publish stk error response based on merchantID
                 RabbitMQQueues queueTitle = new RabbitMQQueues();
@@ -117,17 +118,22 @@ namespace TodoAPI.Controllers
 
 
             //encode amount + TRANSTIME
-            int amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString());
+            string amnt = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString();
+            int i = (int)float.Truncate(float.Parse(amnt));
+            string amount = i.ToString();
             string TransTime = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("TransactionDate")).Value.ToString();
 
-
-            byte[] _amtTime = Encoding.UTF8.GetBytes(amount + TransTime);
-            String _encodedamtTime = System.Convert.ToBase64String(_amtTime);
 
 
             //GET ACC NO & other details FROM TEMPORARY TABLE
             //Add DATA TO call back table into 
-            var tempitem = _context.TempSTKData.First(n => n.AmtTime == _encodedamtTime);
+            var tempitem = _context.TempSTKData.First(r => r.TransTime.Equals(TransTime));
+            string accNo = tempitem.accNO;
+
+
+            byte[] _amtAcc = Encoding.UTF8.GetBytes(amount + accNo);
+            String _encodedamtAcc = System.Convert.ToBase64String(_amtAcc);
+
 
             TodoAPI.Models.StkCallback stkresponse = new TodoAPI.Models.StkCallback()
             {
@@ -154,7 +160,7 @@ namespace TodoAPI.Controllers
 
 
             //DB  DELETE ANY  FROM TEMPRARY TABLE  BASED ON THE REF ACCNO
-            var tempstkitems = _context.TempSTKData.Where(n => n.accNO == tempitem.accNO);
+            var tempstkitems = _context.TempSTKData.Where(n => n.accNO == stkresponse.AccountReference);
             foreach (TempSTKData n in tempstkitems)
             {
                 _context.TempSTKData.Remove(n);
@@ -166,7 +172,7 @@ namespace TodoAPI.Controllers
 
             // publish stk response based on amt & transtime
             RabbitMQQueues queueTitle2 = new RabbitMQQueues();
-            queueTitle2.QueueTitle = _encodedamtTime;
+            queueTitle2.QueueTitle = _encodedamtAcc;
             await _rabbitMQPublisher.PublishMessageAsync(request.Body, queueTitle2.QueueTitle);
 
 
