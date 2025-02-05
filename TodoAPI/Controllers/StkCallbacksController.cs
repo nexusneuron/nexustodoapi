@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.DotNet.MSIdentity.Shared;
 using Newtonsoft.Json;
 using NuGet.Protocol;
@@ -84,16 +85,27 @@ namespace TodoAPI.Controllers
             var body = await reader.ReadToEndAsync();
 
 
-            Console.WriteLine(body);
+            //Console.WriteLine(body);
 
 
             // As well as a bound model
-            //var request = JsonConvert.DeserializeObject<StkCallbackPartial>(bodyjson);
             Root request = JsonConvert.DeserializeObject<Root>(body);
 
-            if(request.Body.stkCallback.ResultCode != 0)
+            //[used to check if a queue exists with the merchantID cos there was an error stk not processed successfuly. logs error.  advises user in display]
+            if (request.Body.stkCallback.ResultCode != 0)
             {
-                Console.WriteLine(request.Body.stkCallback.ResultDesc);
+
+                //Console.WriteLine(request.Body.stkCallback.ResultDesc);
+
+                var merchantID = request.Body.stkCallback.MerchantRequestID;
+
+                // publish stk error response based on merchantID
+                RabbitMQQueues queueTitle = new RabbitMQQueues();
+                queueTitle.QueueTitle = merchantID;
+
+                //CREATE queue with the merchantID  MESSAGE IS ERROR
+                //TO BE CONSUMED BY CONFIRMPAYMENT METHOD 
+                await _rabbitMQPublisher.PublishMessageAsync(request.Body, queueTitle.QueueTitle);
 
                 //return unsuccesful to user
                 //log error
@@ -101,53 +113,62 @@ namespace TodoAPI.Controllers
                 return NoContent();
             }
 
-            Console.WriteLine(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value);
+            //Console.WriteLine(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value);
+
+
+            //encode amount + TRANSTIME
+            int amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString());
+            string TransTime = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("TransactionDate")).Value.ToString();
+
+
+            byte[] _amtTime = Encoding.UTF8.GetBytes(amount + TransTime);
+            String _encodedamtTime = System.Convert.ToBase64String(_amtTime);
+
+
+            //GET ACC NO & other details FROM TEMPORARY TABLE
+            //Add DATA TO call back table into 
+            var tempitem = _context.TempSTKData.First(n => n.AmtTime == _encodedamtTime);
 
             TodoAPI.Models.StkCallback stkresponse = new TodoAPI.Models.StkCallback()
             {
-                //AccountReference =   TransactionDate from model //Account number  //check if amts under this account reference total with invoice
+                AccountReference = tempitem.accNO,
                 Amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString()),
                 CheckoutRequestID = request.Body.stkCallback.CheckoutRequestID,
                 MerchantRequestID = request.Body.stkCallback.MerchantRequestID,
                 MpesaReceiptNumber = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString(),
-                //Name = jsonrespo.Name,
+                Name = "username logged",
                 PhoneNumber = long.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("PhoneNumber")).Value.ToString()),
-                //TransactionDate = TransactionDate from model,
-                //TransactionDesc = TransactionDesc from model,
+                TransactionDate = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("TransactionDate")).Value.ToString(),
+                TransactionDesc = tempitem.TransactionDesc,
             };
-
-            //Console.WriteLine(value);
-            //Console.WriteLine(jsonrespo);
-            Console.WriteLine(stkresponse.AccountReference);
 
 
             //DB
             _context.SktCallback.Add(stkresponse);
             await _context.SaveChangesAsync();
 
-            //encode phone + amount //PHONE+MERCHANTREQUESTDID
-            int amount = int.Parse(stkresponse.Amount.ToString());
-            string phone = stkresponse.PhoneNumber.ToString();
-            string merchantID = stkresponse.MerchantRequestID;
-           
-            //string accNO = "CompanyXLTD";
-            string accNO = "NexuspayIni";
+
+            ////DB  change bool of PAID for  INV TABLE BASED ON ACCNO FROM TEMPRARY TABLE  to true
+            //_context.SktCallback.Add(stkresponse);
+            //await _context.SaveChangesAsync();
 
 
-            byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);
-            String _encodedamtAccNo = System.Convert.ToBase64String(_amtAccNo);
+            //DB  DELETE ANY  FROM TEMPRARY TABLE  BASED ON THE REF ACCNO
+            var tempstkitems = _context.TempSTKData.Where(n => n.accNO == tempitem.accNO);
+            foreach (TempSTKData n in tempstkitems)
+            {
+                _context.TempSTKData.Remove(n);
+            }
+
+            await _context.SaveChangesAsync();
 
 
-            RabbitMQQueues queueTitle = new RabbitMQQueues();
-            //queueTitle.QueueTitle = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString();
-            queueTitle.QueueTitle = _encodedamtAccNo;
 
+            // publish stk response based on amt & transtime
+            RabbitMQQueues queueTitle2 = new RabbitMQQueues();
+            queueTitle2.QueueTitle = _encodedamtTime;
+            await _rabbitMQPublisher.PublishMessageAsync(request.Body, queueTitle2.QueueTitle);
 
-            // publish order validation data
-            //await _rabbitMQPublisher.PublishMessageAsync(request.Body, RabbitMQQueues.stkcallbackqueue);
-            await _rabbitMQPublisher.PublishMessageAsync(request.Body, queueTitle.QueueTitle);
-
-            //await _rabbitMQConsumer.ConsumeMessageAsync(queueTitle.QueueTitle);
 
             return NoContent();
         }

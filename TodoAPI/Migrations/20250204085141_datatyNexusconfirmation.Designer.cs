@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoAPI.Data;
 
@@ -11,9 +12,11 @@ using TodoAPI.Data;
 namespace TodoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204085141_datatyNexusconfirmation")]
+    partial class datatyNexusconfirmation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,16 @@ namespace TodoAPI.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("MSISDN")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MiddleName")
                         .HasColumnType("longtext");
 
                     b.Property<string>("OrgAccountBalance")
@@ -91,49 +103,6 @@ namespace TodoAPI.Migrations
                     b.HasKey("MpesaReceiptNumber");
 
                     b.ToTable("SktCallback");
-                });
-
-            modelBuilder.Entity("TodoAPI.Models.TempSTKData", b =>
-                {
-                    b.Property<string>("AmtTime")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("AccountReference")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CallBackURL")
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("PartyB")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("PhoneNumber")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("TransTime")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("TransactionDesc")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("accNO")
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("amount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("businessShortcode")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("partyA")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("passkey")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AmtTime");
-
-                    b.ToTable("TempSTKData");
                 });
 
             modelBuilder.Entity("TodoAPI.Models.TodoItem", b =>

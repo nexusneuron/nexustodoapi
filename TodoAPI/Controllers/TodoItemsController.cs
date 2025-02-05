@@ -63,16 +63,31 @@ namespace TodoAPI.Controllers
             public string CustomerMessage { get; set; }
         }
 
-        public async Task ConfirmPayment(string encodedphoneMerchant)
+        //Read message from Message Queue
+        public async Task<IActionResult> ConfirmPayment(string _encodedamtTime, string merchantID)
         {
-            Console.WriteLine("Reading from messaging QUEUE after saving to DB");
+            //Console.WriteLine("Reading from messaging QUEUE after saving to DB.    DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT");
 
+            //DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT      B4 CONSUMING   QUEUE
             await Task.Delay(60 * 1000);
 
-            await _rabbitMQConsumer.ConsumeMessageAsync(encodedphoneMerchant);
+            var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtTime, merchantID);
+
+            if(response.value == true)
+            {
+
+                Console.WriteLine(response.Message.ToString());
+                return Ok(response);
+
+                //
+            }
 
 
-            Console.WriteLine("Read from ConfirmPayment method");
+            Console.WriteLine(response.Message.ToString());
+            return BadRequest(response);
+            //user to retry
+
+            //Console.WriteLine("Read from ConfirmPayment method");
         }
 
 
@@ -91,34 +106,50 @@ namespace TodoAPI.Controllers
                 {
                     return StatusCode(StatusCodes.Status409Conflict, ErrorCode.TodoItemIDInUse.ToString());
                 }
-                //_todoRepository.Insert(item);
 
+                //_todoRepository.Insert(item);
                 //item.ID = new Guid().ToString();
 
-                //_mpesaservice.oauth();
 
+                //mpesaservice oauth();
                 //var response = await _mpesaservice.oauth2();
-
-                //if (response.ErrorException != null)
-                //{
-                //    Console.WriteLine(response.ErrorException.Message);
-                //    return BadRequest(ErrorCode.CouldNotCreateItem.ToString());
-                //}
-
-                //Console.WriteLine(response.Content);
+                ////Console.WriteLine(response.Content);
 
 
                 ////CtoBSimulate
                 //var ctobresponse = await _mpesaservice.c2bsimulate();
+                ////CtoBRegisterURL
                 //var ctobresponse = await _mpesaservice.CtoBRegisterURL();
-                //Console.WriteLine(ctobresponse.Content);
+                ////Console.WriteLine(ctobresponse.Content);
 
 
-                ////STK Push
-                var response = await _mpesaservice.stkpush();
+                ////STK Push OBJECTS
+                DateTime d = DateTime.Now;
+                string dateString = d.ToString("yyyyMMddHHmmss");
 
 
-				Console.WriteLine("expectin response read within todoitems controller");
+                //encode amt + TransTime
+                int businessShortcode = 5142254;
+                int amount = 1;
+                long partyA = 254717904391;
+                //string accNO = "CompanyXLTD";
+                string accNO = "NexuspayIni";  //VALUE FROM INV/ORDERS TABLE
+                string TransTime = dateString;
+                int PartyB = 5142254;
+                long PhoneNumber = 254717904391;
+                //CallBackURL = "https://buzzard-hip-donkey.ngrok-free.app/api/stkcallbacks";
+                string CallBackURL = "https://nexuspay.nexusneuron.com/api/stkcallbacks";
+                string TransactionDesc = "NexuspayPro";
+                string passkey = "6b4ef1cdca85cb784b049776727e927d73dcdcd717444e51a53e0e7579e5dad6";
+
+                ///  PASS
+                ///  MULTITENANT [ PASS   PASSKEY, BusinessShortCode = shortcode,  Amount = 1, PartyA = 254717904391, PartyB = SHORTCODE/TILLNUMBER, PhoneNumber = 254717904391, CallBackURL = "https://nexuspay.nexusneuron.com/api/stkcallbacks", AccountReference = "NexuspayIni",TransactionDesc = "NexuspayPro" ]
+                //var response = await _mpesaservice.stkpush();
+
+                var response = await _mpesaservice.stkpush(businessShortcode, amount, partyA, accNO, TransTime, PartyB, PhoneNumber, CallBackURL,  TransactionDesc, passkey);
+
+
+				//Console.WriteLine("expectin response read within todoitems controller    IF HAS ERROR USER IS NOTIFIED TO RETRY IN A MIN");
 				if (response.ErrorException != null)
 				{
 					Console.WriteLine(response.ErrorException.Message);
@@ -132,58 +163,47 @@ namespace TodoAPI.Controllers
                 // You now have the body string raw
                 //var body = await reader.ReadToEndAsync();
 
+
                 //Get merchant ID
                 Root requestResponse = JsonConvert.DeserializeObject<Root>(response.Content);
                 String merchantID = requestResponse.MerchantRequestID;
 
-                //encode phone + amount
-                int amount = 1;
-                string phone = "254717904391";
-                //string accNO = "CompanyXLTD";
-                string accNO = "NexuspayIni";
 
 
-
-                byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);
-                String _encodedamtAccNo = System.Convert.ToBase64String(_amtAccNo);
-
-
-                //encoded phone merchantID
-                //byte[] _phoneMerchant = Encoding.UTF8.GetBytes(phone + merchantID);
-                //String _encodedphoneMerchant = System.Convert.ToBase64String(_phoneMerchant);
-
-                RabbitMQQueues queueTitle = new RabbitMQQueues();
-                //queueTitle.QueueTitle = response.Content.Count().ToString();
-                queueTitle.QueueTitle = _encodedamtAccNo;
-
-                Console.WriteLine(queueTitle.QueueTitle);
-
-                //await ConfirmPayment(_encodedphoneMerchant);
-
-                //send the inserted product data to the queue and consumer will listening this data from queue
-                //await _rabbitMQPublisher.SendStkResponseMessage(response.Content);
+                byte[] _amtTime = Encoding.UTF8.GetBytes(amount + TransTime);
+                String _encodedamtTime = System.Convert.ToBase64String(_amtTime);
 
 
-                //Console.WriteLine("PUBLISHING TO QUEUE");
-                //post to queue and read from queue
-                //await _rabbitMQPublisher.PublishMessageAsync(response.Content, queueTitle.QueueTitle);
+                ////DB TEMPORARY DATA TABLE
+                TempSTKData tempsdkdata = new TempSTKData() 
+                {
+                    AmtTime = _encodedamtTime,
+                    businessShortcode = businessShortcode,
+                    amount = amount,
+                    partyA = partyA,
+                    accNO = accNO,
+                    TransTime = TransTime,
+                    PartyB = PartyB,
+                    PhoneNumber = PhoneNumber,
+                    CallBackURL = CallBackURL,
+                    TransactionDesc = TransactionDesc,
+                };
 
-                Console.WriteLine("writing to db first");
+                _context.TempSTKData.Add(tempsdkdata);
+                await _context.SaveChangesAsync();
 
 
-                //Console.WriteLine(response.Content);
-
+                ////DB TODOITEMS
                 _context.TodoItems.Add(item);
                 await _context.SaveChangesAsync();
-                //_context.SaveChanges();
 
 
-                Console.WriteLine("Calling ConfirmPayment method");
+                //Console.WriteLine("Calling ConfirmPayment method");
 
                 try
                 {
-                    ConfirmPayment(_encodedamtAccNo);
-                    //await _rabbitMQConsumer.ConsumeMessageAsync(queueTitle.QueueTitle);
+                    //Calling ConfirmPayment method
+                    ConfirmPayment(_encodedamtTime, merchantID);
                 }
                 catch (Exception)
                 {
@@ -192,7 +212,7 @@ namespace TodoAPI.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
                 return BadRequest(ErrorCode.CouldNotCreateItem.ToString());
             }
             return Ok(item);

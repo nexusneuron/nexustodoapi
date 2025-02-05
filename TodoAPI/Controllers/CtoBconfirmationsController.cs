@@ -67,17 +67,18 @@ namespace TodoAPI.Controllers
             var body = await reader.ReadToEndAsync();
 
 
-            Console.WriteLine("i have hit ctob");
-            Console.WriteLine(body);
+            //Console.WriteLine("i have hit ctob");
+            //Console.WriteLine(body);
 
 
             // As well as a bound model
             //var request = JsonConvert.DeserializeObject<StkCallbackPartial>(bodyjson);
             Root request = JsonConvert.DeserializeObject<Root>(body);
 
+
             if (request == null)
             {
-                Console.WriteLine("request came back empty");
+                ////Console.WriteLine("request came back empty");
 
                 //return unsuccesful to user
                 //log error
@@ -85,61 +86,41 @@ namespace TodoAPI.Controllers
                 return NoContent();
             }
 
-            Console.WriteLine(request.InvoiceNumber);
-			Console.WriteLine(request.BillRefNumber);
-			Console.WriteLine(request.InvoiceNumber);
-			Console.WriteLine(request.BillRefNumber);
-
 
             TodoAPI.Models.NexuspayConfirmation ctobresponse = new TodoAPI.Models.NexuspayConfirmation()
             {
                 TransAmount = request.TransAmount,
                 BillRefNumber = request.BillRefNumber,
                 TransID = request.TransID,
-                //Amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString()),
-                //CheckoutRequestID = request.Body.stkCallback.CheckoutRequestID,
-                //MpesaReceiptNumber = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString(),
-                //Name = jsonrespo.Name,
-                //PhoneNumber = long.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("PhoneNumber")).Value.ToString()),
-                //TransactionDate = TransactionDate from model,
-                //TransactionDesc = TransactionDesc from model,
+                TransTime = DateTime.Parse(request.TransTime),
+                FirstName = request.FirstName,
+                OrgAccountBalance = request.OrgAccountBalance,
+                BusinessShortCode = request.BusinessShortCode,
+                MSISDN  = request.MSISDN,
+                TransactionType = request.TransactionType,
             };
 
-
-            Console.WriteLine(ctobresponse.TransID);
-            Console.WriteLine(ctobresponse.TransID);
-			Console.WriteLine(ctobresponse.TransID);
 
             //DB
             _context.NexuspayConfirmation.Add(ctobresponse);
             await _context.SaveChangesAsync();
 
 
-            //encode phone + amount //PHONE+MERCHANTREQUESTDID
+            //encode amount + TRANSTIME
+            //ctobresponse.TransAmount   float  to  truncated zero decimal int then string
             int i = (int)float.Truncate(float.Parse(ctobresponse.TransAmount));
             string amount = i.ToString();
-
-            Console.WriteLine("ctobresponse.TransAmount   float  to  truncated zero decimal int then string");
-            Console.WriteLine(i);
-
-            //string amount = ctobresponse.TransAmount;
-            //string transID = ctobresponse.TransID;
-            string accNO = ctobresponse.BillRefNumber;
-
-            byte[] _amtAccNo = Encoding.UTF8.GetBytes(amount + accNO);
-            String _encodedamtAccNo = System.Convert.ToBase64String(_amtAccNo);
+            string TransTime = ctobresponse.TransTime.ToString();
 
 
-            RabbitMQQueues queueTitle = new RabbitMQQueues();
-            //queueTitle.QueueTitle = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value.ToString();
-            queueTitle.QueueTitle = _encodedamtAccNo;
+            byte[] _amtTime = Encoding.UTF8.GetBytes(amount + TransTime);
+            String _encodedamtTime = System.Convert.ToBase64String(_amtTime);
 
 
-            // publish order validation data
-            //await _rabbitMQPublisher.PublishMessageAsync(request.Body, RabbitMQQueues.stkcallbackqueue);
-            await _rabbitMQPublisher.PublishMessageAsync(request, queueTitle.QueueTitle);
-
-            //await _rabbitMQConsumer.ConsumeMessageAsync(queueTitle.QueueTitle);
+            // publish stk response based on amt & transtime
+            RabbitMQQueues queueTitle2 = new RabbitMQQueues();
+            queueTitle2.QueueTitle = _encodedamtTime;
+            await _rabbitMQPublisher.PublishMessageAsync(request, queueTitle2.QueueTitle);
 
             return NoContent();
         }

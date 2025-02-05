@@ -49,7 +49,7 @@ namespace TodoAPI.Services
             request.AddHeader("Authorization", "Basic " + encoded);
             request.AddParameter("text/plain", "", ParameterType.RequestBody);
             //RestResponse response = client.Execute(request);
-            //Console.WriteLine(response.Content);
+            ////Console.WriteLine(response.Content);
 
             try
             {
@@ -61,21 +61,21 @@ namespace TodoAPI.Services
                 // Pipes the stream to a higher level stream reader with the required encoding format. 
                 //StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
 
-                //Console.WriteLine(readStream.ReadToEnd());
+                ////Console.WriteLine(readStream.ReadToEnd());
                 //response.Close();
                 //readStream.Close();
                 RestResponse response = client.Execute(request);
                 if (response.ErrorException != null)
                 {
-                    Console.WriteLine(response.ErrorException.Message);
+                    //Console.WriteLine(response.ErrorException.Message);
                     return;
                 }
-                Console.WriteLine(response.Content);
+                //Console.WriteLine(response.Content);
             }
             catch (WebException ex)
             {
                 var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                Console.WriteLine(resp);
+                //Console.WriteLine(resp);
 
             }
         }
@@ -109,11 +109,11 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                Console.WriteLine(response.ErrorException.Message);
+                //Console.WriteLine(response.ErrorException.Message);
                 return response;
             }
 
-            Console.WriteLine(response.Content);
+            //Console.WriteLine(response.Content);
             return response;
 
         }
@@ -144,7 +144,10 @@ namespace TodoAPI.Services
 
         }
 
-        public async Task<RestResponse> stkpush()
+        //MULTITENANT   [GET   PASSKEY, BusinessShortCode = shortcode, Amount = 1, PartyA = 254717904391, PartyB = SHORTCODE / TILLNUMBER, PhoneNumber = 254717904391, CallBackURL = "https://nexuspay.nexusneuron.com/api/stkcallbacks", AccountReference = "NexuspayIni", TransactionDesc = "NexuspayPro"]
+        //public async Task<RestResponse> stkpush()
+        public async Task<RestResponse> stkpush(int businessShortcode, int amount, long partyA, string accNO, string TransTime, int PartyB, long PhoneNumber, string CallBackURL, string TransactionDesc, string passkey)
+
         {
             //string baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
             string baseUrl = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
@@ -158,11 +161,11 @@ namespace TodoAPI.Services
 
             if (getaccesstoken.ErrorException != null)
             {
-                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                //Console.WriteLine(getaccesstoken.ErrorException.Message);
                 return getaccesstoken;
             }
 
-            Console.WriteLine(getaccesstoken.Content);
+            //Console.WriteLine(getaccesstoken.Content);
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
@@ -171,41 +174,42 @@ namespace TodoAPI.Services
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + _accesstoken);
 
-            Console.WriteLine(_accesstoken);
+            //Console.WriteLine(_accesstoken);
 
-            DateTime d = DateTime.Now;
-            string dateString = d.ToString("yyyyMMddHHmmss");
+            //DateTime d = DateTime.Now;
+            //string dateString = d.ToString("yyyyMMddHHmmss");
 
             //string passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
-            string passkey = "6b4ef1cdca85cb784b049776727e927d73dcdcd717444e51a53e0e7579e5dad6";
+            //string passkey = "6b4ef1cdca85cb784b049776727e927d73dcdcd717444e51a53e0e7579e5dad6";
 
             //int shortcode = 174379;
-            int shortcode = 5142254;
+            //int shortcode = 5142254;
 
-            byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
+            //byte[] _password = Encoding.UTF8.GetBytes(shortcode + passkey + dateString);
+            byte[] _password = Encoding.UTF8.GetBytes(businessShortcode + passkey + TransTime);
             String _encodedpassword = System.Convert.ToBase64String(_password);
 
             ////////////////////////////////
             stkrequest stk = new stkrequest(){
                 Password = _encodedpassword,
-                BusinessShortCode = shortcode,
-                Timestamp = dateString,
+                BusinessShortCode = businessShortcode,
+                Timestamp = TransTime,
                 TransactionType = "CustomerPayBillOnline",
-                Amount = 1,
-                PartyA = 254717904391,
-                PartyB = shortcode,
-                PhoneNumber = 254717904391,
+                Amount = amount,
+                PartyA = partyA,
+                PartyB = PartyB,
+                PhoneNumber = PhoneNumber,
                 //CallBackURL = "https://buzzard-hip-donkey.ngrok-free.app/api/stkcallbacks",
                 //CallBackURL = "https://testsite.nexusneuron.com/api/stkcallbacks",
-                CallBackURL = "https://nexuspay.nexusneuron.com/api/stkcallbacks",
+                CallBackURL = CallBackURL,
 
-                AccountReference = "NexuspayIni",
-                TransactionDesc = "NexuspayPro"
+                AccountReference = accNO,
+                TransactionDesc = TransactionDesc,
             };
 
             string jsonstk = JsonConvert.SerializeObject(stk, Formatting.Indented);
 
-            Console.WriteLine(jsonstk);
+            //Console.WriteLine(jsonstk);
 
 
             request.AddParameter("application/json", jsonstk ,  ParameterType.RequestBody);
@@ -214,14 +218,14 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                Console.WriteLine(response.ErrorException.Message);
-				Console.WriteLine(response.ErrorMessage);
-				Console.WriteLine(response.StatusCode);
-				Console.WriteLine(response.Content);
+                //Console.WriteLine(response.ErrorException.Message);
+				//Console.WriteLine(response.ErrorMessage);
+				//Console.WriteLine(response.StatusCode);
+				//Console.WriteLine(response.Content);
                 return response;
             }
 
-            Console.WriteLine(response.Content);
+            //Console.WriteLine(response.Content);
             return response;
 
         }
@@ -253,11 +257,11 @@ namespace TodoAPI.Services
 
             if (getaccesstoken.ErrorException != null)
             {
-                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                //Console.WriteLine(getaccesstoken.ErrorException.Message);
                 return getaccesstoken;
             }
 
-            Console.WriteLine(getaccesstoken.Content);
+            //Console.WriteLine(getaccesstoken.Content);
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
@@ -289,11 +293,11 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                Console.WriteLine(response.ErrorException.Message);
+                //Console.WriteLine(response.ErrorException.Message);
                 return response;
             }
 
-            Console.WriteLine(response.Content);
+            //Console.WriteLine(response.Content);
             return response;
 
         }
@@ -319,11 +323,11 @@ namespace TodoAPI.Services
 
             if (getaccesstoken.ErrorException != null)
             {
-                Console.WriteLine(getaccesstoken.ErrorException.Message);
+                //Console.WriteLine(getaccesstoken.ErrorException.Message);
                 return getaccesstoken;
             }
 
-            Console.WriteLine(getaccesstoken.Content);
+            //Console.WriteLine(getaccesstoken.Content);
 
 
             TypeHere typeHere = JsonConvert.DeserializeObject<TypeHere>(getaccesstoken.Content);
@@ -332,7 +336,7 @@ namespace TodoAPI.Services
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + _accesstoken);
 
-            Console.WriteLine(_accesstoken);
+            //Console.WriteLine(_accesstoken);
 
             //DateTime d = DateTime.Now;
             //string dateString = d.ToString("yyyyMMddHHmmss");
@@ -354,7 +358,7 @@ namespace TodoAPI.Services
 
             string jsonstk = JsonConvert.SerializeObject(c2b, Formatting.Indented);
 
-            Console.WriteLine(jsonstk);
+            //Console.WriteLine(jsonstk);
 
             request.AddParameter("application/json", jsonstk, ParameterType.RequestBody);
             ////////////////////////////////
@@ -370,11 +374,11 @@ namespace TodoAPI.Services
             var response = await client.ExecuteAsync(request);
             if (response.ErrorException != null)
             {
-                Console.WriteLine(response.ErrorException.Message);
+                //Console.WriteLine(response.ErrorException.Message);
                 return response;
             }
 
-            Console.WriteLine(response.Content);
+            //Console.WriteLine(response.Content);
             return response;
 
         }

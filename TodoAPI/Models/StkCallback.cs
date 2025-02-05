@@ -7,7 +7,7 @@
         public string? CheckoutRequestID { get; set; }    //            "CheckoutRequestID": "ws_CO_191220191020363925",
         public int? Amount { get; set; }    //            "Amount": "1",
         public long? PhoneNumber { get; set; }    //    LONG DATATYPE        "PhoneNumber":"254708374149",
-        public string? AccountReference { get; set; }     //            "AccountReference":"Test" 
+        public string? AccountReference { get; set; }     //            "AccountReference":"AccountNumbee" 
         public string? TransactionDesc { get; set; }    //            "TransactionDesc":"Test"
 
         [Key]
