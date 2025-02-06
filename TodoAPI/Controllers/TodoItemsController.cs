@@ -73,7 +73,8 @@ namespace TodoAPI.Controllers
 
             var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtAcc, merchantID);
 
-            if(response.value == true)
+            Console.WriteLine("//////////////////////////////////////////////////////");
+            if (response.value == true)
             {
 
                 Console.WriteLine(response.Message.ToString());
@@ -84,10 +85,13 @@ namespace TodoAPI.Controllers
 
 
             Console.WriteLine(response.Message.ToString());
+
+
+            Console.WriteLine("Read from ConfirmPayment method");
+            Console.WriteLine("//////////////////////////////////////////////////////");
             return BadRequest(response);
             //user to retry
 
-            Console.WriteLine("Read from ConfirmPayment method");
         }
 
 

@@ -131,6 +131,10 @@ namespace TodoAPI.Controllers
             string accNo = tempitem.accNO;
 
 
+            Console.WriteLine("//////////////////////////////////////////////////////");
+            Console.WriteLine("Acc No read from TempSTKData table is" + accNo);
+            Console.WriteLine("//////////////////////////////////////////////////////");
+
             byte[] _amtAcc = Encoding.UTF8.GetBytes(amount + accNo);
             String _encodedamtAcc = System.Convert.ToBase64String(_amtAcc);
 
