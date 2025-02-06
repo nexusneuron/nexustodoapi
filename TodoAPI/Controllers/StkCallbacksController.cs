@@ -127,7 +127,7 @@ namespace TodoAPI.Controllers
 
             //GET ACC NO & other details FROM TEMPORARY TABLE
             //Add DATA TO call back table into 
-            var tempitem = _context.TempSTKData.First(r => r.TransTime.Equals(TransTime));
+            var tempitem = await _context.TempSTKData.FirstAsync(r => r.TransTime.Equals(TransTime));
             string accNo = tempitem.accNO;
 
 

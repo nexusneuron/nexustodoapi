@@ -281,7 +281,7 @@ namespace TodoAPI.MessageBroker.Services
 
 
                     //    // Send an acknowledgement to RabbitMQ
-                    await channel.BasicAckAsync(ea.DeliveryTag, false);
+                    await channel2.BasicAckAsync(ea.DeliveryTag, false);
 
 
                     //return response to confirmpayment
