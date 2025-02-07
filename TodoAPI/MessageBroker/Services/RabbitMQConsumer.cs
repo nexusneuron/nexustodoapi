@@ -87,6 +87,7 @@ namespace TodoAPI.MessageBroker.Services
         {
             bool value = false;
             string value2 = string.Empty;
+            callbackresponse _callbackresponse = new callbackresponse();
 
             var factory = new ConnectionFactory
             {
@@ -168,11 +169,10 @@ namespace TodoAPI.MessageBroker.Services
                 //callback or confirmation was successful
                 await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
 
-                callbackresponse _callbackresponse = new callbackresponse()
-                {
-                    Message = value2,
-                    value = value,
-                };
+
+                _callbackresponse.Message = value2;
+                _callbackresponse.value = value;
+
                 Console.WriteLine("//////////////////////////////////////////////////////");
                 Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
@@ -244,21 +244,23 @@ namespace TodoAPI.MessageBroker.Services
                     //callback or confirmation was successful
                     await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
 
-                    callbackresponse _callbackresponse1 = new callbackresponse()
-                    {
-                        Message = value2,
-                        value = value,
-                    };
+                    _callbackresponse.Message = value2;
+                    _callbackresponse.value = value;
+
                     Console.WriteLine("//////////////////////////////////////////////////////");
-                    Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse1.Message + "///////" + " " + _callbackresponse1.value.ToString());
+                    Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
                     Console.WriteLine("//////////////////////////////////////////////////////");
 
 
                     //return response to confirmpayment
-                    return _callbackresponse1;
+                    return _callbackresponse;
 
                 }
 
+                _callbackresponse.Message = value2;
+                _callbackresponse.value = value; 
+
+                return _callbackresponse;
 
             }
             else if (consumer.Channel.MessageCountAsync(queueName) == null) ////RETRYING   CHANNEL 2//
@@ -357,11 +359,10 @@ namespace TodoAPI.MessageBroker.Services
                 //Callback has error after execution
                 await channel2.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
 
-                callbackresponse _callbackresponse = new callbackresponse()
-                {
-                    Message = value2,
-                    value = value,
-                };
+
+                _callbackresponse.Message = value2;
+                _callbackresponse.value = value;
+
                 Console.WriteLine("//////////////////////////////////////////////////////");
                 Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
@@ -369,7 +370,14 @@ namespace TodoAPI.MessageBroker.Services
                 return _callbackresponse;
             }
 
+            _callbackresponse.Message = value2;
+            _callbackresponse.value = value;
 
+            Console.WriteLine("//////////////////////////////////////////////////////");
+            Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+            Console.WriteLine("//////////////////////////////////////////////////////");
+
+            return _callbackresponse;
         }
 
     }
