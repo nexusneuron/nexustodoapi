@@ -133,19 +133,25 @@ namespace TodoAPI.MessageBroker.Services
                     //Message is from Confirmation URL
                     if (requestCallback.Body.stkCallback == null)
                     {
+                        Console.WriteLine("//////////////////////////////////////////////////////");
                         Console.WriteLine("Message is from Confirmation URL");
 
                         //Deserialize RootConfirmation Display this message only
                         Console.WriteLine(requestConfirmation.FirstName);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+
                         bool value = true;
 
                         string value2 = message;
                     }
                     else
                     {
+                        Console.WriteLine("//////////////////////////////////////////////////////");
                         //Deserialized RootCallback Display this message only
                         Console.WriteLine("Message is from Callback URL");
                         Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+
                         bool value = true;
 
                         string value2 = message;
@@ -169,18 +175,24 @@ namespace TodoAPI.MessageBroker.Services
                     //Message is from Confirmation URL
                     if (message2 != null && requestConfirmation != null)
                     {
+                        Console.WriteLine("//////////////////////////////////////////////////////");
                         Console.WriteLine("Message is from Confirmation URL");
 
                         Console.WriteLine(requestConfirmation.FirstName);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+
                         bool value = true;
 
                         string value2 = message2;
                     }
                     else if (message2 != null && requestCallback.Body.stkCallback != null)
                     {
+                        Console.WriteLine("//////////////////////////////////////////////////////");
                         //Deserialized RootCallback Display this message only
                         Console.WriteLine("Message is from Callback URL");
                         Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+
                         bool value = true;
 
                         string value2 = message2;
@@ -222,17 +234,19 @@ namespace TodoAPI.MessageBroker.Services
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                Console.WriteLine("Read from Queue INSIDE");
+                Console.WriteLine("Read from Queue2 INSIDE");
 
                 Console.WriteLine(message);
 
 
                 if (message != null)
                 {
+                    Console.WriteLine("//////////////////////////////////////////////////////");
                     Console.WriteLine("Message is from merchantID error");
 
                     //Deserialize RootConfirmation Display this message only
                     Console.WriteLine(message);
+                    Console.WriteLine("//////////////////////////////////////////////////////");
 
                     bool value = false;
 
@@ -250,14 +264,17 @@ namespace TodoAPI.MessageBroker.Services
                     //DELAY 15 Sec  MESSAGE TO BE retried
                     await Task.Delay(15 * 1000);
 
-
+                    Console.WriteLine("//////////////////////////////////////////////////////");
                     var message2 = Encoding.UTF8.GetString(body);
+                    Console.WriteLine("//////////////////////////////////////////////////////" + " " + message2);
 
                     //Message is from merchantID error
                     //if (message != null)
                     try
                     {
-                        Console.WriteLine("Message is from merchantID error" + message);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+                        Console.WriteLine("Message is from merchantID error" + message2);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
 
                         bool value = false;
                         string value2 = message2;
@@ -271,9 +288,11 @@ namespace TodoAPI.MessageBroker.Services
                     catch (Exception ex) 
                     //else
                     {
+                        Console.WriteLine("//////////////////////////////////////////////////////");
                         //Deserialized RootCallback Display this message only
                         Console.WriteLine("Message is from merchantID error STK FAILED & ERROR FROM merchantID unknown");
                         Console.WriteLine(ex.Message.ToString());
+                        Console.WriteLine("//////////////////////////////////////////////////////");
 
                         bool value = false;
                         string value2 = "ERROR FROM merchantID unknown";
@@ -299,6 +318,9 @@ namespace TodoAPI.MessageBroker.Services
                 Message = value2,
                 value = value,
             };
+            Console.WriteLine("//////////////////////////////////////////////////////");
+            Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+            Console.WriteLine("//////////////////////////////////////////////////////");
 
             return _callbackresponse;
 
