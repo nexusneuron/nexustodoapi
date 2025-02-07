@@ -116,232 +116,259 @@ namespace TodoAPI.MessageBroker.Services
             {
                 Console.WriteLine("Channel 1 queue has Message");
                 Console.WriteLine("//////////////////////////////////////////////////////");
+
+                consumer.ReceivedAsync += async (model, ea) =>
+                {
+                    var body = ea.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+
+
+                    //Deserialize Classes
+                    RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
+
+                    RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
+
+                    if (message != null)
+                    {
+                        //Message is from Confirmation URL
+                        if (requestCallback.Body.stkCallback == null)
+                        {
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+                            Console.WriteLine("Message is from Confirmation URL");
+
+                            //Deserialize RootConfirmation Display this message only
+                            Console.WriteLine(requestConfirmation.FirstName);
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+
+                            bool value = true;
+
+                            string value2 = message;
+                        }
+                        else
+                        {
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+                            //Deserialized RootCallback Display this message only
+                            Console.WriteLine("Message is from Callback URL");
+                            Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+
+                            bool value = true;
+
+                            string value2 = message;
+                        }
+
+
+                        //    // Send an acknowledgement to RabbitMQ
+                        await channel.BasicAckAsync(ea.DeliveryTag, false);
+
+                    }
+
+                };
+
+                //callback or confirmation was successful
+                await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+
+                callbackresponse _callbackresponse = new callbackresponse()
+                {
+                    Message = value2,
+                    value = value,
+                };
+                Console.WriteLine("//////////////////////////////////////////////////////");
+                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+                Console.WriteLine("//////////////////////////////////////////////////////");
+
+
+
+
+                //return response to confirmpayment
+                return _callbackresponse;
+
             }
-            else if(consumer.Channel.MessageCountAsync(queueName) == null)
+            else if(consumer.Channel.MessageCountAsync(queueName) == null ) ////RETRYING
             {
                 await Task.Delay(30 * 1000);
 
                 Console.WriteLine("Channel 1 queue has Message  RETRIED");
                 Console.WriteLine("//////////////////////////////////////////////////////");
+
+                if (consumer.Channel.MessageCountAsync(queueName) != null)
+                {
+
+                    consumer.ReceivedAsync += async (model, ea) =>
+                    {
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+
+
+                        //Deserialize Classes
+                        RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
+
+                        RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
+
+                        if (message != null)
+                        {
+                            //Message is from Confirmation URL
+                            if (requestCallback.Body.stkCallback == null)
+                            {
+                                Console.WriteLine("//////////////////////////////////////////////////////");
+                                Console.WriteLine("Message is from Confirmation URL");
+
+                                //Deserialize RootConfirmation Display this message only
+                                Console.WriteLine(requestConfirmation.FirstName);
+                                Console.WriteLine("//////////////////////////////////////////////////////");
+
+                                bool value = true;
+
+                                string value2 = message;
+                            }
+                            else
+                            {
+                                Console.WriteLine("//////////////////////////////////////////////////////");
+                                //Deserialized RootCallback Display this message only
+                                Console.WriteLine("Message is from Callback URL");
+                                Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+                                Console.WriteLine("//////////////////////////////////////////////////////");
+
+                                bool value = true;
+
+                                string value2 = message;
+                            }
+
+                            //    // Send an acknowledgement to RabbitMQ
+                            await channel.BasicAckAsync(ea.DeliveryTag, false);
+
+                        }
+
+                    };
+
+                    //callback or confirmation was successful
+                    await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+
+                    callbackresponse _callbackresponse1 = new callbackresponse()
+                    {
+                        Message = value2,
+                        value = value,
+                    };
+                    Console.WriteLine("//////////////////////////////////////////////////////");
+                    Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse1.Message + "///////" + " " + _callbackresponse1.value.ToString());
+                    Console.WriteLine("//////////////////////////////////////////////////////");
+
+
+                    //return response to confirmpayment
+                    return _callbackresponse1;
+
+                }
+
+
             }
-            else //
+            else if (consumer.Channel.MessageCountAsync(queueName) == null) ////RETRYING   CHANNEL 2//
             {
                 Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
                 Console.WriteLine("//////////////////////////////////////////////////////");
-            }
-
-            Console.WriteLine("Reached INSIDE");
-            Console.WriteLine("//////////////////////////////////////////////////////");
-            ////
-            
-
-            consumer.ReceivedAsync += async (model, ea) =>
-            {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
 
 
-                //Deserialize Classes
-                RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
+                //check queue based on merchantID
+                using var channel2 = await connection.CreateChannelAsync();
+                //use merchantID as queueName
+                await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
+                Console.WriteLine("QUEUE 2 DECLARED");
+                var consumer2 = new AsyncEventingBasicConsumer(channel2);
 
-                if (message != null)
+                consumer2.ReceivedAsync += async (model, ea) =>
                 {
-                    //Message is from Confirmation URL
-                    if (requestCallback.Body.stkCallback == null)
+                    var body = ea.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+
+                    Console.WriteLine("Read from Queue2 INSIDE");
+                    Console.WriteLine(message);
+
+
+                    if (message != null)
                     {
                         Console.WriteLine("//////////////////////////////////////////////////////");
-                        Console.WriteLine("Message is from Confirmation URL");
+                        Console.WriteLine("Message is from merchantID error");
 
                         //Deserialize RootConfirmation Display this message only
-                        Console.WriteLine(requestConfirmation.FirstName);
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-
-                        bool value = true;
-
-                        string value2 = message;
-                    }
-                    else
-                    {
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        //Deserialized RootCallback Display this message only
-                        Console.WriteLine("Message is from Callback URL");
-                        Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-
-                        bool value = true;
-
-                        string value2 = message;
-                    }
-
-
-                    //    // Send an acknowledgement to RabbitMQ
-                    await channel.BasicAckAsync(ea.DeliveryTag, false);
-
-
-                    //return response to confirmpayment
-                    //value = message;
-                }
-                else if (message == null)  //retrying
-                {
-                    //DELAY 15 Sec  MESSAGE TO BE retried
-                    await Task.Delay(15 * 1000);
-
-                    var message2 = Encoding.UTF8.GetString(body);
-
-                    //Message is from Confirmation URL
-                    if (message2 != null && requestConfirmation != null)
-                    {
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        Console.WriteLine("Message is from Confirmation URL");
-
-                        Console.WriteLine(requestConfirmation.FirstName);
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-
-                        bool value = true;
-
-                        string value2 = message2;
-                    }
-                    else if (message2 != null && requestCallback.Body.stkCallback != null)
-                    {
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        //Deserialized RootCallback Display this message only
-                        Console.WriteLine("Message is from Callback URL");
-                        Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-
-                        bool value = true;
-
-                        string value2 = message2;
-                    }
-
-
-                    //    // Send an acknowledgement to RabbitMQ
-                    await channel.BasicAckAsync(ea.DeliveryTag, false);
-
-
-                    //return response to confirmpayment
-                }
-
-                ////
-                ///   CONTINUE CHECHICKG COS THERE IS A QUEUE WITH THE ERROR OF THE MERCHANT ID
-                ///   
-
-            };
-
-
-
-
-            //check queue based on merchantID
-            using var channel2 = await connection.CreateChannelAsync();
-            //use merchantID as queueName
-            await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
-
-            Console.WriteLine("QUEUE 2 DECLARED");
-            //use merchantID as queueName
-            Console.WriteLine(merchantID);
-
-            var consumer2 = new AsyncEventingBasicConsumer(channel2);
-
-            consumer2.ReceivedAsync += async (model, ea) =>
-            {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-
-                Console.WriteLine("Read from Queue2 INSIDE");
-
-                Console.WriteLine(message);
-
-
-                if (message != null)
-                {
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-                    Console.WriteLine("Message is from merchantID error");
-
-                    //Deserialize RootConfirmation Display this message only
-                    Console.WriteLine(message);
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-
-                    bool value = false;
-
-                    string value2 = message;
-
-
-                    //    // Send an acknowledgement to RabbitMQ
-                    await channel2.BasicAckAsync(ea.DeliveryTag, false);
-
-
-                    //return response to confirmpayment
-                }
-                else if (message == null)  //retrying TO CHECK MERCHANTID ERROR MESSAGE
-                {
-                    //DELAY 15 Sec  MESSAGE TO BE retried
-                    await Task.Delay(15 * 1000);
-
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-                    var message2 = Encoding.UTF8.GetString(body);
-                    Console.WriteLine("//////////////////////////////////////////////////////" + " " + message2);
-
-                    //Message is from merchantID error
-                    //if (message != null)
-                    try
-                    {
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        Console.WriteLine("Message is from merchantID error" + message2);
+                        Console.WriteLine(message);
                         Console.WriteLine("//////////////////////////////////////////////////////");
 
                         bool value = false;
-                        string value2 = message2;
+
+                        string value2 = message;
+
 
                         //    // Send an acknowledgement to RabbitMQ
                         await channel2.BasicAckAsync(ea.DeliveryTag, false);
 
-                        //return response to confirmpayment about error
 
+                        //return response to confirmpayment
                     }
-                    catch (Exception ex) 
-                    //else
+                    else if (message == null)  //retrying TO CHECK MERCHANTID ERROR MESSAGE
                     {
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        //Deserialized RootCallback Display this message only
-                        Console.WriteLine("Message is from merchantID error STK FAILED & ERROR FROM merchantID unknown");
-                        Console.WriteLine(ex.Message.ToString());
-                        Console.WriteLine("//////////////////////////////////////////////////////");
+                        //DELAY 15 Sec  MESSAGE TO BE retried
+                        await Task.Delay(15 * 1000);
 
-                        bool value = false;
-                        string value2 = "ERROR FROM merchantID unknown";
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+                        var message2 = Encoding.UTF8.GetString(body);
+                        Console.WriteLine("//////////////////////////////////////////////////////" + " " + message2);
+
+                        //Message is from merchantID error
+                        //if (message != null)
+                        try
+                        {
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+                            Console.WriteLine("Message is from merchantID error" + message2);
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+
+                            bool value = false;
+                            string value2 = message2;
+
+                            //    // Send an acknowledgement to RabbitMQ
+                            await channel2.BasicAckAsync(ea.DeliveryTag, false);
+
+                            //return response to confirmpayment about error
+
+                        }
+                        catch (Exception ex)
+                        //else
+                        {
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+                            //Deserialized RootCallback Display this message only
+                            Console.WriteLine("Message is from merchantID error STK FAILED & ERROR FROM merchantID unknown");
+                            Console.WriteLine(ex.Message.ToString());
+                            Console.WriteLine("//////////////////////////////////////////////////////");
+
+                            bool value = false;
+                            string value2 = "ERROR FROM merchantID unknown";
+                        }
+
+
+                        //    // Send an acknowledgement to RabbitMQ
+                        await channel2.BasicAckAsync(ea.DeliveryTag, false);
+
+
+                        //return response to confirmpayment
                     }
 
 
-                    //    // Send an acknowledgement to RabbitMQ
-                    await channel2.BasicAckAsync(ea.DeliveryTag, false);
+                };
 
+                //Callback has error after execution
+                await channel2.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
 
-                    //return response to confirmpayment
-                }
+                callbackresponse _callbackresponse = new callbackresponse()
+                {
+                    Message = value2,
+                    value = value,
+                };
+                Console.WriteLine("//////////////////////////////////////////////////////");
+                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+                Console.WriteLine("//////////////////////////////////////////////////////");
 
+                return _callbackresponse;
+            }
 
-            };
-
-
-
-            //callback or confirmation was successful
-            await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
-
-            //Callback has error after execution
-            await channel.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
-
-            callbackresponse _callbackresponse = new callbackresponse()
-            {
-                Message = value2,
-                value = value,
-            };
-            Console.WriteLine("//////////////////////////////////////////////////////");
-            Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
-            Console.WriteLine("//////////////////////////////////////////////////////");
-
-            return _callbackresponse;
 
         }
 
