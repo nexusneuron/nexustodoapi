@@ -95,9 +95,9 @@ namespace TodoAPI.MessageBroker.Services
                 Password = _rabbitMqSetting.Password,
                 Port = _rabbitMqSetting.Port
             };
-
+            Console.WriteLine("//////////////////////////////////////////////////////");
             Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR.    DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED");
-
+            Console.WriteLine("//////////////////////////////////////////////////////");
             //DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED      B4 CONSUMING  CONSTRUCTING QUEUE CONN
             await Task.Delay(30 * 1000);
 
@@ -106,16 +106,34 @@ namespace TodoAPI.MessageBroker.Services
             await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
 
+            Console.WriteLine("//////////////////////////////////////////////////////");
             Console.WriteLine("QUEUE DECLARED");
             Console.WriteLine(queueName);
             ////
 
-
             var consumer = new AsyncEventingBasicConsumer(channel);
+            if (consumer.Channel.MessageCountAsync(queueName) != null) 
+            {
+                Console.WriteLine("Channel 1 queue has Message");
+                Console.WriteLine("//////////////////////////////////////////////////////");
+            }
+            else if(consumer.Channel.MessageCountAsync(queueName) == null)
+            {
+                await Task.Delay(30 * 1000);
+
+                Console.WriteLine("Channel 1 queue has Message  RETRIED");
+                Console.WriteLine("//////////////////////////////////////////////////////");
+            }
+            else //
+            {
+                Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
+                Console.WriteLine("//////////////////////////////////////////////////////");
+            }
 
             Console.WriteLine("Reached INSIDE");
-
+            Console.WriteLine("//////////////////////////////////////////////////////");
             ////
+            
 
             consumer.ReceivedAsync += async (model, ea) =>
             {
@@ -213,9 +231,6 @@ namespace TodoAPI.MessageBroker.Services
             };
 
 
-            //callback or confirmation was successful
-            await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
-
 
 
             //check queue based on merchantID
@@ -310,8 +325,12 @@ namespace TodoAPI.MessageBroker.Services
             };
 
 
+
+            //callback or confirmation was successful
+            await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+
             //Callback has error after execution
-            await channel.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer);
+            await channel.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
 
             callbackresponse _callbackresponse = new callbackresponse()
             {
