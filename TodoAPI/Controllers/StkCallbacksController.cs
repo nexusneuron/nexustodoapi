@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.WellKnownTypes;
+using MassTransit.Initializers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.DotNet.MSIdentity.Shared;
@@ -126,9 +127,13 @@ namespace TodoAPI.Controllers
 
 
             //GET ACC NO & other details FROM TEMPORARY TABLE
-            //Add DATA TO call back table into 
-            var tempitem = _context.TempSTKData.FirstOrDefault(r => r.TransTime.Equals(TransTime));
-            string accNo = tempitem.accNO;
+            //Add DATA TO call back table into
+            var tempitemaccNo = await _context.TempSTKData.FirstOrDefaultAsync(r => r.merchantID.Equals(merchantID)).Select(r => r.accNO.ToString());
+            if (tempitemaccNo == null) tempitemaccNo = "null";
+            string accNo = tempitemaccNo;
+
+            var tempitemtransxDesc = await _context.TempSTKData.FirstOrDefaultAsync(r => r.merchantID.Equals(merchantID)).Select(r => r.TransactionDesc.ToString());
+            if (tempitemtransxDesc == null) tempitemtransxDesc = "null";
 
 
             Console.WriteLine("//////////////////////////////////////////////////////");
@@ -141,7 +146,7 @@ namespace TodoAPI.Controllers
 
             TodoAPI.Models.StkCallback stkresponse = new TodoAPI.Models.StkCallback()
             {
-                AccountReference = tempitem.accNO,
+                AccountReference = tempitemaccNo,
                 Amount = int.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("Amount")).Value.ToString()),
                 CheckoutRequestID = request.Body.stkCallback.CheckoutRequestID,
                 MerchantRequestID = request.Body.stkCallback.MerchantRequestID,
@@ -149,7 +154,7 @@ namespace TodoAPI.Controllers
                 Name = "username logged",
                 PhoneNumber = long.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("PhoneNumber")).Value.ToString()),
                 TransactionDate = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("TransactionDate")).Value.ToString(),
-                TransactionDesc = tempitem.TransactionDesc,
+                TransactionDesc = tempitemtransxDesc,
             };
 
 
