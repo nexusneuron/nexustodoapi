@@ -106,7 +106,9 @@ namespace TodoAPI.MessageBroker.Services
 
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
-            await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            var status = await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+            //if(status.MessageCount == 0)
 
 
             Console.WriteLine("//////////////////////////////////////////////////////");
@@ -115,7 +117,9 @@ namespace TodoAPI.MessageBroker.Services
             ////
 
             var consumer = new AsyncEventingBasicConsumer(channel);
-            if (consumer.Channel.MessageCountAsync(queueName) != null) 
+            //if (consumer.Channel.MessageCountAsync(queueName) != null)
+
+            if (status.MessageCount > 0)
             {
                 Console.WriteLine("Channel 1 queue has Message");
                 Console.WriteLine("//////////////////////////////////////////////////////");
@@ -186,14 +190,16 @@ namespace TodoAPI.MessageBroker.Services
                 return _callbackresponse;
 
             }
-            else if(consumer.Channel.MessageCountAsync(queueName) == null ) ////RETRYING
+            //else if(consumer.Channel.MessageCountAsync(queueName) == null ) ////RETRYING
+            else if (status.MessageCount == 0)
             {
                 await Task.Delay(30 * 1000);
 
                 Console.WriteLine("Channel 1 queue has Message  RETRIED");
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
-                if (consumer.Channel.MessageCountAsync(queueName) != null)
+                //if (consumer.Channel.MessageCountAsync(queueName) != nullstatus.MessageCount > 0)
+                if (status.MessageCount > 0)
                 {
 
                     consumer.ReceivedAsync += async (model, ea) =>
@@ -265,7 +271,8 @@ namespace TodoAPI.MessageBroker.Services
                 return _callbackresponse;
 
             }
-            else if (consumer.Channel.MessageCountAsync(queueName) == null) ////RETRYING   CHANNEL 2//
+            //else if (consumer.Channel.MessageCountAsync(queueName) == null) ////RETRYING   CHANNEL 2//
+            else if (status.MessageCount == 0)
             {
                 Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
                 Console.WriteLine("//////////////////////////////////////////////////////");
@@ -274,7 +281,7 @@ namespace TodoAPI.MessageBroker.Services
                 //check queue based on merchantID
                 using var channel2 = await connection.CreateChannelAsync();
                 //use merchantID as queueName
-                await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
+                var status2 = await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                 Console.WriteLine("QUEUE 2 DECLARED");
                 var consumer2 = new AsyncEventingBasicConsumer(channel2);
