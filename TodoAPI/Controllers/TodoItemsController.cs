@@ -63,6 +63,12 @@ namespace TodoAPI.Controllers
             public string CustomerMessage { get; set; }
         }
 
+        public class confirmation
+        {
+            public string Message { get; set; }
+            public bool value { get; set; }
+        }
+
         //Read message from Message Queue
         public async Task<IActionResult> ConfirmPayment(string _encodedamtAcc, string merchantID)
         {
@@ -73,25 +79,46 @@ namespace TodoAPI.Controllers
 
             var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtAcc, merchantID);
 
-            Console.WriteLine("//////////////////////////////////////////////////////");
-            if (response.value == true)
+            //Get merchant ID
+            //confirmation requestResponse = JsonConvert.DeserializeObject<confirmation>(response.);
+            //String message = requestResponse.Message;
+            if (response == null)
             {
 
-                Console.WriteLine(response.Message.ToString());
-                return Ok(response);
+                Console.WriteLine("response.Message.ToString()   is   NULL");
+                return BadRequest() ;
 
                 //
             }
 
+            confirmation confirm = new confirmation()
+            {
+                Message = response.Message,
+                value = response.value
+            };
 
-            Console.WriteLine(response.Message.ToString());
 
-
-            Console.WriteLine("Read from ConfirmPayment method");
             Console.WriteLine("//////////////////////////////////////////////////////");
-            return BadRequest(response);
-            //user to retry
+            if (confirm.value == true)
+            {
 
+                Console.WriteLine(confirm.Message.ToString());
+                return Ok(confirm);
+
+                //
+            }
+            else
+            {
+
+                Console.WriteLine(response.Message.ToString());
+
+
+                Console.WriteLine("Read from ConfirmPayment method");
+                Console.WriteLine("//////////////////////////////////////////////////////     ");
+                return BadRequest(confirm);
+                //user to retry
+
+            }
         }
 
 
@@ -137,7 +164,7 @@ namespace TodoAPI.Controllers
                 int amount = 1;
                 long partyA = 254717904391;
                 //string accNO = "CompanyXLTD";
-                string accNO = "NexuspayIni";  //VALUE FROM INV/ORDERS TABLE
+                string accNO = "NexuspayTwo";  //VALUE FROM INV/ORDERS TABLE
                 string TransTime = dateString;
                 int PartyB = 5142254;
                 long PhoneNumber = 254717904391;

@@ -96,10 +96,12 @@ namespace TodoAPI.MessageBroker.Services
                 Password = _rabbitMqSetting.Password,
                 Port = _rabbitMqSetting.Port
             };
+
             Console.WriteLine("//////////////////////////////////////////////////////");
             Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR.    DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED");
             Console.WriteLine("//////////////////////////////////////////////////////");
             //DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED      B4 CONSUMING  CONSTRUCTING QUEUE CONN
+
             await Task.Delay(30 * 1000);
 
             using var connection = await factory.CreateConnectionAsync();

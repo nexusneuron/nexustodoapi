@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using MassTransit.Initializers;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.DotNet.MSIdentity.Shared;
@@ -100,6 +101,7 @@ namespace TodoAPI.Controllers
             {
 
                 Console.WriteLine(request.Body.stkCallback.ResultDesc);
+                Console.WriteLine(request.Body.stkCallback.ResultCode);
 
                 // publish stk error response based on merchantID
                 RabbitMQQueues queueTitle = new RabbitMQQueues();
@@ -114,6 +116,7 @@ namespace TodoAPI.Controllers
 
                 return NoContent();
             }
+
 
             Console.WriteLine(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("MpesaReceiptNumber")).Value);
 
@@ -137,7 +140,7 @@ namespace TodoAPI.Controllers
 
 
             Console.WriteLine("//////////////////////////////////////////////////////");
-            Console.WriteLine("Acc No read from TempSTKData table is" + accNo);
+            Console.WriteLine("Acc No read from TempSTKData table is " + accNo);
             Console.WriteLine("//////////////////////////////////////////////////////");
 
             byte[] _amtAcc = Encoding.UTF8.GetBytes(amount + accNo);
