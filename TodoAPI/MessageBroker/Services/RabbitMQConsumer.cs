@@ -88,10 +88,6 @@ namespace TodoAPI.MessageBroker.Services
         //public async Task<bool> ConsumeMessageAsync(string queueName, string merchantID)
         public async Task<bool> ConsumeMessageAsync(string queueName, string merchantID)
         {
-            bool value = false;
-            string value2 = string.Empty;
-            callbackresponse _callbackresponse = new callbackresponse();
-
             var factory = new ConnectionFactory
             {
                 HostName = _rabbitMqSetting.HostName,
@@ -122,32 +118,33 @@ namespace TodoAPI.MessageBroker.Services
             var consumer = new AsyncEventingBasicConsumer(channel);
             //if (consumer.Channel.MessageCountAsync(queueName) != null)
 
-            if (status.MessageCount > 0)
+            bool value = false;
+
+            try
             {
-                Console.WriteLine("Channel 1 queue has Message");
-                Console.WriteLine("//////////////////////////////////////////////////////");
 
-                consumer.ReceivedAsync += async (model, ea) =>
+                if (status.MessageCount > 0)
                 {
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
+                    Console.WriteLine("Channel 1 queue has Message");
+                    Console.WriteLine("//////////////////////////////////////////////////////");
 
-
-                    Console.WriteLine("//////////////////////////////////////////////////////        Channel 1 queue has Message");
-                    Console.WriteLine(message);
-
-                    //Deserialize Classes
-                    RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
-
-                    RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
-
-                    //Message is from Confirmation URL
-                    //if (requestCallback.Body.stkCallback.ResultDesc == null)
-                    try
+                    consumer.ReceivedAsync += async (model, ea) =>
                     {
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+
+
+                        Console.WriteLine("//////////////////////////////////////////////////////        Channel 1 queue has Message");
+                        Console.WriteLine(message);
+
+                        //Deserialize Classes
+                        RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
+
+                        RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
+
+                        //Message is from Confirmation URL
                         Console.WriteLine("//////////////////////////////////////////////////////");
                         Console.WriteLine("Message is from Confirmation URL");
-
                         //Deserialize RootConfirmation Display this message only
                         Console.WriteLine(requestConfirmation.FirstName);
                         Console.WriteLine("//////////////////////////////////////////////////////");
@@ -159,123 +156,69 @@ namespace TodoAPI.MessageBroker.Services
                         Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
                         Console.WriteLine("//////////////////////////////////////////////////////");
 
-                        bool value = true;
-
-                        string value2 = message;
-                    }
-                    catch(Exception ex) 
-                    //catcelse
-                    {
-
-                        //bool value = true;
-
-                        //string value2 = message;
-                    }
+                        //    // Send an acknowledgement to RabbitMQ
+                        await channel.BasicAckAsync(ea.DeliveryTag, false);
 
 
-                    //    // Send an acknowledgement to RabbitMQ
-                    await channel.BasicAckAsync(ea.DeliveryTag, false);
+                    };
 
+                    //callback or confirmation was successful
+                    await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
 
-                };
+                    value = true;
 
-                //callback or confirmation was successful
-                await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+                    //return response to confirmpayment
+                    //return _callbackresponse;
+                    return (value);               
 
-
-                _callbackresponse.Message = value2;
-                _callbackresponse.value = value;
-
-                Console.WriteLine("//////////////////////////////////////////////////////     block 0");
-                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
-                Console.WriteLine("//////////////////////////////////////////////////////");
-
-
-                //return response to confirmpayment
-                //return _callbackresponse;
-                return (value);
-
-            }
-            else if (status2.MessageCount > 0)
-            {
-                Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
-                Console.WriteLine("//////////////////////////////////////////////////////");
-
-                Console.WriteLine("//////////////////////////////////////////////////////");
-                Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR 2.    DELAY 15sec  error MESSAGE TO BE QUEUED");
-                Console.WriteLine("//////////////////////////////////////////////////////");
-
-                await Task.Delay(15 * 1000);
-
-                //check queue based on merchantID
-                //using var channel2 = await connection.CreateChannelAsync();
-                //use merchantID as queueName
-                //var status2 = await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
-
-                //if (status2.MessageCount == 0)
-                //    Console.WriteLine("//////////////////////////////////////////////////////");
-                //    Console.WriteLine("FOUND ERROR QUEUE EMPTY.    DELAY 15sec");
-                //    Console.WriteLine("//////////////////////////////////////////////////////");
-                //await Task.Delay(15 * 1000) ;
-
-                //Console.WriteLine("QUEUE 2 DECLARED");
-                //var consumer2 = new AsyncEventingBasicConsumer(channel2);
-
-
-
-                consumer.ReceivedAsync += async (model, ea) =>
+                }
+                else if (status2.MessageCount > 0)
                 {
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-
-                    Console.WriteLine("Read from Queue2 INSIDE");
-                    Console.WriteLine(message);
-
-
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-                    Console.WriteLine("Message is from merchantID error");
-
-                    //Deserialize RootConfirmation Display this message only
-                    Console.WriteLine(message);
+                    Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
                     Console.WriteLine("//////////////////////////////////////////////////////");
 
-                    bool value = false;
+                    Console.WriteLine("//////////////////////////////////////////////////////");
+                    Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR 2.    DELAY 15sec  error MESSAGE TO BE QUEUED");
+                    Console.WriteLine("//////////////////////////////////////////////////////");
 
-                    string value2 = message;
+                    await Task.Delay(15 * 1000);
+
+                    consumer.ReceivedAsync += async (model, ea) =>
+                    {
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+                        Console.WriteLine("Message is from merchantID error");
+
+                        //Deserialize RootConfirmation Display this message only
+                        Console.WriteLine(message);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+
+                        /// Send an acknowledgement to RabbitMQ
+                        //await channel2.BasicAckAsync(ea.DeliveryTag, false);
+                        await channel.BasicAckAsync(ea.DeliveryTag, false);
+
+                    };
+
+                    //Callback has error after execution
+                    //await channel2.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
+                    await channel.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer);
 
 
-                    //    // Send an acknowledgement to RabbitMQ
-                    //await channel2.BasicAckAsync(ea.DeliveryTag, false);
-                    await channel.BasicAckAsync(ea.DeliveryTag, false);
+                    Console.WriteLine("//////////////////////////////////////////////////////     BLOCK 1");
+                
+                    value = false;
 
+                    //return _callbackresponse;
+                    return (value);
+                }
+            }
+            catch (Exception ex)
+            {
 
-
-                };
-
-                //Callback has error after execution
-                //await channel2.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
-                await channel.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer);
-
-
-                _callbackresponse.Message = value2;
-                _callbackresponse.value = value;
-
-                Console.WriteLine("//////////////////////////////////////////////////////     BLOCK 1");
-                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message.ToString() + "///////" + " " + _callbackresponse.value.ToString());
-                Console.WriteLine("//////////////////////////////////////////////////////");
-
-                //return _callbackresponse;
-                return (value);
             }
 
-            _callbackresponse.Message = value2;
-            _callbackresponse.value = value;
-
-            Console.WriteLine("//////////////////////////////////////////////////////     BLOCK 2");
-            Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
-            Console.WriteLine("//////////////////////////////////////////////////////");
-
-            //return _callbackresponse;
             return (value);
         }
 
