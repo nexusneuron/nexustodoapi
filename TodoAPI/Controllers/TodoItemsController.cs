@@ -65,7 +65,6 @@ namespace TodoAPI.Controllers
 
         public class confirmation
         {
-            public string Message { get; set; }
             public bool value { get; set; }
         }
 
@@ -77,48 +76,38 @@ namespace TodoAPI.Controllers
             //DELAY 1/2 MINUTE   USER TO EXECUTE PIN INPUT      B4 CONSUMING   QUEUE
             await Task.Delay(30 * 1000);
 
+            //var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtAcc, merchantID);<T>(T message,
             var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtAcc, merchantID);
 
-            //Get merchant ID
-            //confirmation requestResponse = JsonConvert.DeserializeObject<confirmation>(response.);
+
+            //Get response bool
+            confirmation requestResponse = JsonConvert.DeserializeObject<confirmation>(response.ToString());
             //String message = requestResponse.Message;
-            if (response == null)
-            {
-
-                Console.WriteLine("response.Message.ToString()   is   NULL");
-                return BadRequest() ;
-
-                //
-            }
-
-            confirmation confirm = new confirmation()
-            {
-                Message = response.Message,
-                value = response.value
-            };
-
 
             Console.WriteLine("//////////////////////////////////////////////////////");
-            if (confirm.value == true)
+            if (requestResponse.value == false)
             {
 
-                Console.WriteLine(confirm.Message.ToString());
-                return Ok(confirm);
+                Console.WriteLine("Error processing STK push      Get errorcode based on TempSTKData");   ///Get errorcode based on TempSTKData merchantID
+
+                Console.WriteLine("Read from ConfirmPayment method     ERROR");
+                Console.WriteLine("//////////////////////////////////////////////////////     ");
+
+                //user to retry  based on TempSTKData  merchantID
+
+                return BadRequest() ;
 
                 //
             }
             else
             {
+                Console.WriteLine("Successfully processed STK payment");   ///Success 
 
-                Console.WriteLine(response.Message.ToString());
-
-
-                Console.WriteLine("Read from ConfirmPayment method");
+                Console.WriteLine("Read from ConfirmPayment method    SUCCESS");
                 Console.WriteLine("//////////////////////////////////////////////////////     ");
-                return BadRequest(confirm);
-                //user to retry
-
+                return Ok();
             }
+
         }
 
 

@@ -83,7 +83,10 @@ namespace TodoAPI.MessageBroker.Services
         //}
 
         //public async Task ConsumeMessageAsync<T>(T message, string queueName)
-        public async Task<callbackresponse> ConsumeMessageAsync(string queueName, string merchantID)
+        //public async Task<callbackresponse> ConsumeMessageAsync(string queueName, string merchantID)
+
+        //public async Task<bool> ConsumeMessageAsync(string queueName, string merchantID)
+        public async Task<bool> ConsumeMessageAsync(string queueName, string merchantID)
         {
             bool value = false;
             string value2 = string.Empty;
@@ -107,7 +110,7 @@ namespace TodoAPI.MessageBroker.Services
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
             var status = await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-            //ar status2 = await channel.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            var status2 = await channel.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
             //if(status.MessageCount == 0)
 
 
@@ -184,92 +187,11 @@ namespace TodoAPI.MessageBroker.Services
 
 
                 //return response to confirmpayment
-                return _callbackresponse;
+                //return _callbackresponse;
+                return true;
 
             }
-            //else if(consumer.Channel.MessageCountAsync(queueName) == null ) ////RETRYING
-            //else if (status.MessageCount == 0)
-            //{
-            //    await Task.Delay(30 * 1000);
-
-            //    Console.WriteLine("Channel 1 queue has Message  RETRIED");
-            //    Console.WriteLine("//////////////////////////////////////////////////////");
-
-            //    //if (consumer.Channel.MessageCountAsync(queueName) != nullstatus.MessageCount > 0)
-            //    if (status.MessageCount > 0)
-            //    {
-
-            //        consumer.ReceivedAsync += async (model, ea) =>
-            //        {
-            //            var body = ea.Body.ToArray();
-            //            var message = Encoding.UTF8.GetString(body);
-
-
-            //            //Deserialize Classes
-            //            RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
-
-            //            RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
-
-            //            if (message != null)
-            //            {
-            //                //Message is from Confirmation URL
-            //                if (requestCallback.Body.stkCallback == null)
-            //                {
-            //                    Console.WriteLine("//////////////////////////////////////////////////////");
-            //                    Console.WriteLine("Message is from Confirmation URL");
-
-            //                    //Deserialize RootConfirmation Display this message only
-            //                    Console.WriteLine(requestConfirmation.FirstName);
-            //                    Console.WriteLine("//////////////////////////////////////////////////////");
-
-            //                    bool value = true;
-
-            //                    string value2 = message;
-            //                }
-            //                else
-            //                {
-            //                    Console.WriteLine("//////////////////////////////////////////////////////");
-            //                    //Deserialized RootCallback Display this message only
-            //                    Console.WriteLine("Message is from Callback URL");
-            //                    Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
-            //                    Console.WriteLine("//////////////////////////////////////////////////////");
-
-            //                    bool value = true;
-
-            //                    string value2 = message;
-            //                }
-
-            //                //    // Send an acknowledgement to RabbitMQ
-            //                await channel.BasicAckAsync(ea.DeliveryTag, false);
-
-            //            }
-
-            //        };
-
-            //        //callback or confirmation was successful
-            //        await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
-
-            //        _callbackresponse.Message = value2;
-            //        _callbackresponse.value = value;
-
-            //        Console.WriteLine("//////////////////////////////////////////////////////");
-            //        Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
-            //        Console.WriteLine("//////////////////////////////////////////////////////");
-
-
-            //        //return response to confirmpayment
-            //        return _callbackresponse;
-
-            //    }
-
-            //    _callbackresponse.Message = value2;
-            //    _callbackresponse.value = value; 
-
-            //    return _callbackresponse;
-
-            //}
-            //else if (consumer.Channel.MessageCountAsync(queueName) == null) ////RETRYING   CHANNEL 2//
-            else if (status.MessageCount == 0)
+            else if (status2.MessageCount > 0)
             {
                 Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
                 Console.WriteLine("//////////////////////////////////////////////////////");
@@ -281,22 +203,22 @@ namespace TodoAPI.MessageBroker.Services
                 await Task.Delay(15 * 1000);
 
                 //check queue based on merchantID
-                using var channel2 = await connection.CreateChannelAsync();
+                //using var channel2 = await connection.CreateChannelAsync();
                 //use merchantID as queueName
-                var status2 = await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
+                //var status2 = await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                if (status2.MessageCount == 0)
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-                    Console.WriteLine("FOUND ERROR QUEUE EMPTY.    DELAY 15sec");
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-                await Task.Delay(15 * 1000) ;
+                //if (status2.MessageCount == 0)
+                //    Console.WriteLine("//////////////////////////////////////////////////////");
+                //    Console.WriteLine("FOUND ERROR QUEUE EMPTY.    DELAY 15sec");
+                //    Console.WriteLine("//////////////////////////////////////////////////////");
+                //await Task.Delay(15 * 1000) ;
 
-                Console.WriteLine("QUEUE 2 DECLARED");
-                var consumer2 = new AsyncEventingBasicConsumer(channel2);
+                //Console.WriteLine("QUEUE 2 DECLARED");
+                //var consumer2 = new AsyncEventingBasicConsumer(channel2);
 
 
 
-                consumer2.ReceivedAsync += async (model, ea) =>
+                consumer.ReceivedAsync += async (model, ea) =>
                 {
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
@@ -318,80 +240,16 @@ namespace TodoAPI.MessageBroker.Services
 
 
                     //    // Send an acknowledgement to RabbitMQ
-                    await channel2.BasicAckAsync(ea.DeliveryTag, false);
+                    //await channel2.BasicAckAsync(ea.DeliveryTag, false);
+                    await channel.BasicAckAsync(ea.DeliveryTag, false);
 
-                    //if (message != null)
-                    //{
-                    //    Console.WriteLine("//////////////////////////////////////////////////////");
-                    //    Console.WriteLine("Message is from merchantID error");
-
-                    //    //Deserialize RootConfirmation Display this message only
-                    //    Console.WriteLine(message);
-                    //    Console.WriteLine("//////////////////////////////////////////////////////");
-
-                    //    bool value = false;
-
-                    //    string value2 = message;
-
-
-                    //    //    // Send an acknowledgement to RabbitMQ
-                    //    await channel2.BasicAckAsync(ea.DeliveryTag, false);
-
-
-                    //    //return response to confirmpayment
-                    //}
-                    //else if (message == null)  //retrying TO CHECK MERCHANTID ERROR MESSAGE
-                    //{
-                    //    //DELAY 15 Sec  MESSAGE TO BE retried
-                    //    await Task.Delay(15 * 1000);
-
-                    //    Console.WriteLine("//////////////////////////////////////////////////////");
-                    //    var message2 = Encoding.UTF8.GetString(body);
-                    //    Console.WriteLine("//////////////////////////////////////////////////////" + " " + message2);
-
-                    //    //Message is from merchantID error
-                    //    //if (message != null)
-                    //    try
-                    //    {
-                    //        Console.WriteLine("//////////////////////////////////////////////////////");
-                    //        Console.WriteLine("Message is from merchantID error" + message2);
-                    //        Console.WriteLine("//////////////////////////////////////////////////////");
-
-                    //        bool value = false;
-                    //        string value2 = message2;
-
-                    //        //    // Send an acknowledgement to RabbitMQ
-                    //        await channel2.BasicAckAsync(ea.DeliveryTag, false);
-
-                    //        //return response to confirmpayment about error
-
-                    //    }
-                    //    catch (Exception ex)
-                    //    //else
-                    //    {
-                    //        Console.WriteLine("//////////////////////////////////////////////////////");
-                    //        //Deserialized RootCallback Display this message only
-                    //        Console.WriteLine("Message is from merchantID error STK FAILED & ERROR FROM merchantID unknown");
-                    //        Console.WriteLine(ex.Message.ToString());
-                    //        Console.WriteLine("//////////////////////////////////////////////////////");
-
-                    //        bool value = false;
-                    //        string value2 = "ERROR FROM merchantID unknown";
-                    //    }
-
-
-                    //    //    // Send an acknowledgement to RabbitMQ
-                    //    await channel2.BasicAckAsync(ea.DeliveryTag, false);
-
-
-                    //    //return response to confirmpayment
-                    //}
 
 
                 };
 
                 //Callback has error after execution
-                await channel2.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
+                //await channel2.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer2);
+                await channel.BasicConsumeAsync(queue: merchantID, autoAck: false, consumer: consumer);
 
 
                 _callbackresponse.Message = value2;
@@ -401,7 +259,8 @@ namespace TodoAPI.MessageBroker.Services
                 Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
-                return _callbackresponse;
+                //return _callbackresponse;
+                return false;
             }
 
             _callbackresponse.Message = value2;
@@ -411,7 +270,8 @@ namespace TodoAPI.MessageBroker.Services
             Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
             Console.WriteLine("//////////////////////////////////////////////////////");
 
-            return _callbackresponse;
+            //return _callbackresponse;
+            return false;
         }
 
     }

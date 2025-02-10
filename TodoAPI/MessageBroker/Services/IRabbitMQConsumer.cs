@@ -6,7 +6,8 @@ namespace TodoAPI.MessageBroker.Services
     {
         //Task ConsumeMessageAsync<T>(T message, string queueName);
         //Task ConsumeMessageAsync(string queueName);
-        Task<callbackresponse> ConsumeMessageAsync(string queueName, string merchantID);
+        //Task<callbackresponse> ConsumeMessageAsync(string queueName, string merchantID);
+        Task<bool> ConsumeMessageAsync(string queueName, string merchantID);
 
         public class callbackresponse
         {
