@@ -285,8 +285,16 @@ namespace TodoAPI.MessageBroker.Services
                 //use merchantID as queueName
                 var status2 = await channel2.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
+                if (status.MessageCount > 0)
+                    Console.WriteLine("//////////////////////////////////////////////////////");
+                    Console.WriteLine("FOUND ERROR QUEUE EMPTY.    DELAY 15sec");
+                    Console.WriteLine("//////////////////////////////////////////////////////");
+                await Task.Delay(15 * 1000) ;
+
                 Console.WriteLine("QUEUE 2 DECLARED");
                 var consumer2 = new AsyncEventingBasicConsumer(channel2);
+
+
 
                 consumer2.ReceivedAsync += async (model, ea) =>
                 {
