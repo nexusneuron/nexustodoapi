@@ -102,7 +102,7 @@ namespace TodoAPI.MessageBroker.Services
             Console.WriteLine("//////////////////////////////////////////////////////");
             //DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED      B4 CONSUMING  CONSTRUCTING QUEUE CONN
 
-            await Task.Delay(30 * 1000);
+            await Task.Delay(15 * 1000);
 
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
@@ -191,86 +191,86 @@ namespace TodoAPI.MessageBroker.Services
 
             }
             //else if(consumer.Channel.MessageCountAsync(queueName) == null ) ////RETRYING
-            else if (status.MessageCount == 0)
-            {
-                await Task.Delay(30 * 1000);
+            //else if (status.MessageCount == 0)
+            //{
+            //    await Task.Delay(30 * 1000);
 
-                Console.WriteLine("Channel 1 queue has Message  RETRIED");
-                Console.WriteLine("//////////////////////////////////////////////////////");
+            //    Console.WriteLine("Channel 1 queue has Message  RETRIED");
+            //    Console.WriteLine("//////////////////////////////////////////////////////");
 
-                //if (consumer.Channel.MessageCountAsync(queueName) != nullstatus.MessageCount > 0)
-                if (status.MessageCount > 0)
-                {
+            //    //if (consumer.Channel.MessageCountAsync(queueName) != nullstatus.MessageCount > 0)
+            //    if (status.MessageCount > 0)
+            //    {
 
-                    consumer.ReceivedAsync += async (model, ea) =>
-                    {
-                        var body = ea.Body.ToArray();
-                        var message = Encoding.UTF8.GetString(body);
-
-
-                        //Deserialize Classes
-                        RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
-
-                        RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
-
-                        if (message != null)
-                        {
-                            //Message is from Confirmation URL
-                            if (requestCallback.Body.stkCallback == null)
-                            {
-                                Console.WriteLine("//////////////////////////////////////////////////////");
-                                Console.WriteLine("Message is from Confirmation URL");
-
-                                //Deserialize RootConfirmation Display this message only
-                                Console.WriteLine(requestConfirmation.FirstName);
-                                Console.WriteLine("//////////////////////////////////////////////////////");
-
-                                bool value = true;
-
-                                string value2 = message;
-                            }
-                            else
-                            {
-                                Console.WriteLine("//////////////////////////////////////////////////////");
-                                //Deserialized RootCallback Display this message only
-                                Console.WriteLine("Message is from Callback URL");
-                                Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
-                                Console.WriteLine("//////////////////////////////////////////////////////");
-
-                                bool value = true;
-
-                                string value2 = message;
-                            }
-
-                            //    // Send an acknowledgement to RabbitMQ
-                            await channel.BasicAckAsync(ea.DeliveryTag, false);
-
-                        }
-
-                    };
-
-                    //callback or confirmation was successful
-                    await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
-
-                    _callbackresponse.Message = value2;
-                    _callbackresponse.value = value;
-
-                    Console.WriteLine("//////////////////////////////////////////////////////");
-                    Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
-                    Console.WriteLine("//////////////////////////////////////////////////////");
+            //        consumer.ReceivedAsync += async (model, ea) =>
+            //        {
+            //            var body = ea.Body.ToArray();
+            //            var message = Encoding.UTF8.GetString(body);
 
 
-                    //return response to confirmpayment
-                    return _callbackresponse;
+            //            //Deserialize Classes
+            //            RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
 
-                }
+            //            RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
 
-                _callbackresponse.Message = value2;
-                _callbackresponse.value = value; 
+            //            if (message != null)
+            //            {
+            //                //Message is from Confirmation URL
+            //                if (requestCallback.Body.stkCallback == null)
+            //                {
+            //                    Console.WriteLine("//////////////////////////////////////////////////////");
+            //                    Console.WriteLine("Message is from Confirmation URL");
 
-                return _callbackresponse;
+            //                    //Deserialize RootConfirmation Display this message only
+            //                    Console.WriteLine(requestConfirmation.FirstName);
+            //                    Console.WriteLine("//////////////////////////////////////////////////////");
 
-            }
+            //                    bool value = true;
+
+            //                    string value2 = message;
+            //                }
+            //                else
+            //                {
+            //                    Console.WriteLine("//////////////////////////////////////////////////////");
+            //                    //Deserialized RootCallback Display this message only
+            //                    Console.WriteLine("Message is from Callback URL");
+            //                    Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+            //                    Console.WriteLine("//////////////////////////////////////////////////////");
+
+            //                    bool value = true;
+
+            //                    string value2 = message;
+            //                }
+
+            //                //    // Send an acknowledgement to RabbitMQ
+            //                await channel.BasicAckAsync(ea.DeliveryTag, false);
+
+            //            }
+
+            //        };
+
+            //        //callback or confirmation was successful
+            //        await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer);
+
+            //        _callbackresponse.Message = value2;
+            //        _callbackresponse.value = value;
+
+            //        Console.WriteLine("//////////////////////////////////////////////////////");
+            //        Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+            //        Console.WriteLine("//////////////////////////////////////////////////////");
+
+
+            //        //return response to confirmpayment
+            //        return _callbackresponse;
+
+            //    }
+
+            //    _callbackresponse.Message = value2;
+            //    _callbackresponse.value = value; 
+
+            //    return _callbackresponse;
+
+            //}
             //else if (consumer.Channel.MessageCountAsync(queueName) == null) ////RETRYING   CHANNEL 2//
             else if (status.MessageCount == 0)
             {
