@@ -177,7 +177,7 @@ namespace TodoAPI.MessageBroker.Services
                 _callbackresponse.value = value;
 
                 Console.WriteLine("//////////////////////////////////////////////////////");
-                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message.ToString() + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
 
@@ -253,7 +253,7 @@ namespace TodoAPI.MessageBroker.Services
             //        _callbackresponse.value = value;
 
             //        Console.WriteLine("//////////////////////////////////////////////////////");
-            //        Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+            //        Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message.ToString() + "///////" + " " + _callbackresponse.value.ToString());
             //        Console.WriteLine("//////////////////////////////////////////////////////");
 
 
@@ -385,7 +385,7 @@ namespace TodoAPI.MessageBroker.Services
                 _callbackresponse.value = value;
 
                 Console.WriteLine("//////////////////////////////////////////////////////");
-                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message.ToString() + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
                 return _callbackresponse;
@@ -395,7 +395,7 @@ namespace TodoAPI.MessageBroker.Services
             _callbackresponse.value = value;
 
             Console.WriteLine("//////////////////////////////////////////////////////");
-            Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+            Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message.ToString() + "///////" + " " + _callbackresponse.value.ToString());
             Console.WriteLine("//////////////////////////////////////////////////////");
 
             return _callbackresponse;
