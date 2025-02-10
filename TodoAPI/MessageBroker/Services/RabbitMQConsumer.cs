@@ -135,40 +135,37 @@ namespace TodoAPI.MessageBroker.Services
 
                     RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
 
-                    if (message != null)
+                    //Message is from Confirmation URL
+                    if (requestCallback.Body.stkCallback == null)
                     {
-                        //Message is from Confirmation URL
-                        if (requestCallback.Body.stkCallback == null)
-                        {
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-                            Console.WriteLine("Message is from Confirmation URL");
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+                        Console.WriteLine("Message is from Confirmation URL");
 
-                            //Deserialize RootConfirmation Display this message only
-                            Console.WriteLine(requestConfirmation.FirstName);
-                            Console.WriteLine("//////////////////////////////////////////////////////");
+                        //Deserialize RootConfirmation Display this message only
+                        Console.WriteLine(requestConfirmation.FirstName);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
 
-                            bool value = true;
+                        bool value = true;
 
-                            string value2 = message;
-                        }
-                        else
-                        {
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-                            //Deserialized RootCallback Display this message only
-                            Console.WriteLine("Message is from Callback URL");
-                            Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-
-                            bool value = true;
-
-                            string value2 = message;
-                        }
-
-
-                        //    // Send an acknowledgement to RabbitMQ
-                        await channel.BasicAckAsync(ea.DeliveryTag, false);
-
+                        string value2 = message;
                     }
+                    else
+                    {
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+                        //Deserialized RootCallback Display this message only
+                        Console.WriteLine("Message is from Callback URL");
+                        Console.WriteLine(requestCallback.Body.stkCallback.CheckoutRequestID);
+                        Console.WriteLine("//////////////////////////////////////////////////////");
+
+                        bool value = true;
+
+                        string value2 = message;
+                    }
+
+
+                    //    // Send an acknowledgement to RabbitMQ
+                    await channel.BasicAckAsync(ea.DeliveryTag, false);
+
 
                 };
 
@@ -295,72 +292,87 @@ namespace TodoAPI.MessageBroker.Services
                     Console.WriteLine(message);
 
 
-                    if (message != null)
-                    {
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        Console.WriteLine("Message is from merchantID error");
+                    Console.WriteLine("//////////////////////////////////////////////////////");
+                    Console.WriteLine("Message is from merchantID error");
 
-                        //Deserialize RootConfirmation Display this message only
-                        Console.WriteLine(message);
-                        Console.WriteLine("//////////////////////////////////////////////////////");
+                    //Deserialize RootConfirmation Display this message only
+                    Console.WriteLine(message);
+                    Console.WriteLine("//////////////////////////////////////////////////////");
 
-                        bool value = false;
+                    bool value = false;
 
-                        string value2 = message;
+                    string value2 = message;
 
 
-                        //    // Send an acknowledgement to RabbitMQ
-                        await channel2.BasicAckAsync(ea.DeliveryTag, false);
+                    //    // Send an acknowledgement to RabbitMQ
+                    await channel2.BasicAckAsync(ea.DeliveryTag, false);
+
+                    //if (message != null)
+                    //{
+                    //    Console.WriteLine("//////////////////////////////////////////////////////");
+                    //    Console.WriteLine("Message is from merchantID error");
+
+                    //    //Deserialize RootConfirmation Display this message only
+                    //    Console.WriteLine(message);
+                    //    Console.WriteLine("//////////////////////////////////////////////////////");
+
+                    //    bool value = false;
+
+                    //    string value2 = message;
 
 
-                        //return response to confirmpayment
-                    }
-                    else if (message == null)  //retrying TO CHECK MERCHANTID ERROR MESSAGE
-                    {
-                        //DELAY 15 Sec  MESSAGE TO BE retried
-                        await Task.Delay(15 * 1000);
-
-                        Console.WriteLine("//////////////////////////////////////////////////////");
-                        var message2 = Encoding.UTF8.GetString(body);
-                        Console.WriteLine("//////////////////////////////////////////////////////" + " " + message2);
-
-                        //Message is from merchantID error
-                        //if (message != null)
-                        try
-                        {
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-                            Console.WriteLine("Message is from merchantID error" + message2);
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-
-                            bool value = false;
-                            string value2 = message2;
-
-                            //    // Send an acknowledgement to RabbitMQ
-                            await channel2.BasicAckAsync(ea.DeliveryTag, false);
-
-                            //return response to confirmpayment about error
-
-                        }
-                        catch (Exception ex)
-                        //else
-                        {
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-                            //Deserialized RootCallback Display this message only
-                            Console.WriteLine("Message is from merchantID error STK FAILED & ERROR FROM merchantID unknown");
-                            Console.WriteLine(ex.Message.ToString());
-                            Console.WriteLine("//////////////////////////////////////////////////////");
-
-                            bool value = false;
-                            string value2 = "ERROR FROM merchantID unknown";
-                        }
+                    //    //    // Send an acknowledgement to RabbitMQ
+                    //    await channel2.BasicAckAsync(ea.DeliveryTag, false);
 
 
-                        //    // Send an acknowledgement to RabbitMQ
-                        await channel2.BasicAckAsync(ea.DeliveryTag, false);
+                    //    //return response to confirmpayment
+                    //}
+                    //else if (message == null)  //retrying TO CHECK MERCHANTID ERROR MESSAGE
+                    //{
+                    //    //DELAY 15 Sec  MESSAGE TO BE retried
+                    //    await Task.Delay(15 * 1000);
+
+                    //    Console.WriteLine("//////////////////////////////////////////////////////");
+                    //    var message2 = Encoding.UTF8.GetString(body);
+                    //    Console.WriteLine("//////////////////////////////////////////////////////" + " " + message2);
+
+                    //    //Message is from merchantID error
+                    //    //if (message != null)
+                    //    try
+                    //    {
+                    //        Console.WriteLine("//////////////////////////////////////////////////////");
+                    //        Console.WriteLine("Message is from merchantID error" + message2);
+                    //        Console.WriteLine("//////////////////////////////////////////////////////");
+
+                    //        bool value = false;
+                    //        string value2 = message2;
+
+                    //        //    // Send an acknowledgement to RabbitMQ
+                    //        await channel2.BasicAckAsync(ea.DeliveryTag, false);
+
+                    //        //return response to confirmpayment about error
+
+                    //    }
+                    //    catch (Exception ex)
+                    //    //else
+                    //    {
+                    //        Console.WriteLine("//////////////////////////////////////////////////////");
+                    //        //Deserialized RootCallback Display this message only
+                    //        Console.WriteLine("Message is from merchantID error STK FAILED & ERROR FROM merchantID unknown");
+                    //        Console.WriteLine(ex.Message.ToString());
+                    //        Console.WriteLine("//////////////////////////////////////////////////////");
+
+                    //        bool value = false;
+                    //        string value2 = "ERROR FROM merchantID unknown";
+                    //    }
 
 
-                        //return response to confirmpayment
-                    }
+                    //    //    // Send an acknowledgement to RabbitMQ
+                    //    await channel2.BasicAckAsync(ea.DeliveryTag, false);
+
+
+                    //    //return response to confirmpayment
+                    //}
 
 
                 };
