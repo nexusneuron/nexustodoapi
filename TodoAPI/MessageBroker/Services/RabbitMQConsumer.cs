@@ -98,7 +98,7 @@ namespace TodoAPI.MessageBroker.Services
             };
 
             Console.WriteLine("//////////////////////////////////////////////////////");
-            Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR.    DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED");
+            Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR.  15secs  DELAY  MINUTE  MESSAGE TO BE QUEUED");
             Console.WriteLine("//////////////////////////////////////////////////////");
             //DELAY 0.5 MINUTE  MESSAGE TO BE QUEUED      B4 CONSUMING  CONSTRUCTING QUEUE CONN
 
@@ -274,6 +274,11 @@ namespace TodoAPI.MessageBroker.Services
                 Console.WriteLine("Channel 2 NEEDS TO BE CREATED");
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
+                Console.WriteLine("//////////////////////////////////////////////////////");
+                Console.WriteLine("CONSUMING MESSAGE CONSTRUCTOR 2.    DELAY 15sec  error MESSAGE TO BE QUEUED");
+                Console.WriteLine("//////////////////////////////////////////////////////");
+
+                await Task.Delay(15 * 1000);
 
                 //check queue based on merchantID
                 using var channel2 = await connection.CreateChannelAsync();
