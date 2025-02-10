@@ -63,10 +63,10 @@ namespace TodoAPI.Controllers
             public string CustomerMessage { get; set; }
         }
 
-        public class confirmation
-        {
-            public bool value { get; set; }
-        }
+        //public class confirmation
+        //{
+        //    public bool value { get; set; }
+        //}
 
         //Read message from Message Queue
         public async Task<IActionResult> ConfirmPayment(string _encodedamtAcc, string merchantID)
@@ -81,21 +81,21 @@ namespace TodoAPI.Controllers
 
 
             //Get response bool
-            confirmation requestResponse = JsonConvert.DeserializeObject<confirmation>(response.ToString());
-            //String message = requestResponse.Message;
+            //confirmation requestResponse = JsonConvert.DeserializeObject<confirmation>(response.ToString());
+            ////String message = requestResponse.Message;
 
-            if (response == null) {
-
-
-                Console.WriteLine("//////////////////////////////////////////////////////     requestResponse returned null");
-
-            }
+            //if (response == null) {
 
 
-            Console.WriteLine("//////////////////////////////////////////////////////     requestResponse is not null  " + requestResponse.value   + "  ///////   " + requestResponse.value.ToString() + "   ///////  " + requestResponse.ToString());
+            //    Console.WriteLine("//////////////////////////////////////////////////////     requestResponse returned null");
+
+            //}
+
+
+            //Console.WriteLine("//////////////////////////////////////////////////////     requestResponse is not null  " + requestResponse.value   + "  ///////   " + requestResponse.value.ToString() + "   ///////  " + requestResponse.ToString());
 
             Console.WriteLine("//////////////////////////////////////////////////////" );
-            if (requestResponse.value.ToString() == "false")
+            if (response == false)
             {
 
                 Console.WriteLine("Error processing STK push      Get errorcode based on TempSTKData");   ///Get errorcode based on TempSTKData merchantID

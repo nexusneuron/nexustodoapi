@@ -254,7 +254,7 @@ namespace TodoAPI.MessageBroker.Services
                 _callbackresponse.value = value;
 
                 Console.WriteLine("//////////////////////////////////////////////////////     BLOCK 1");
-                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
+                Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message.ToString() + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
                 //return _callbackresponse;
