@@ -184,11 +184,9 @@ namespace TodoAPI.MessageBroker.Services
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
 
-
-
                 //return response to confirmpayment
                 //return _callbackresponse;
-                return true;
+                return (value);
 
             }
             else if (status2.MessageCount > 0)
@@ -260,7 +258,7 @@ namespace TodoAPI.MessageBroker.Services
                 Console.WriteLine("//////////////////////////////////////////////////////");
 
                 //return _callbackresponse;
-                return false;
+                return (value);
             }
 
             _callbackresponse.Message = value2;
@@ -271,7 +269,7 @@ namespace TodoAPI.MessageBroker.Services
             Console.WriteLine("//////////////////////////////////////////////////////");
 
             //return _callbackresponse;
-            return false;
+            return (value);
         }
 
     }
