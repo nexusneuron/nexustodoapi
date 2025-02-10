@@ -84,7 +84,17 @@ namespace TodoAPI.Controllers
             confirmation requestResponse = JsonConvert.DeserializeObject<confirmation>(response.ToString());
             //String message = requestResponse.Message;
 
-            Console.WriteLine("//////////////////////////////////////////////////////");
+            if (requestResponse != null) {
+
+
+                Console.WriteLine("//////////////////////////////////////////////////////     requestResponse returned null");
+
+            }
+
+
+            Console.WriteLine("//////////////////////////////////////////////////////     requestResponse is not null  " + requestResponse.value   + "  ///////   " + requestResponse.value.ToString() + "   ///////  " + requestResponse.ToString());
+
+            Console.WriteLine("//////////////////////////////////////////////////////" );
             if (requestResponse.value == false)
             {
 
