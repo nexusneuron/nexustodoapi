@@ -111,6 +111,15 @@ namespace TodoAPI.Controllers
                 //TO BE CONSUMED BY CONFIRMPAYMENT METHOD 
                 await _rabbitMQPublisher.PublishMessageAsync(request.Body, queueTitle.QueueTitle);
 
+
+                ////DB TEMPORARY DATA TABLE Update
+                var tempsdkdata = await _context.TempSTKData.FirstOrDefaultAsync(c => c.merchantID == merchantID); //new TempSTKData()
+                tempsdkdata.Errorcode = request.Body.stkCallback.ResultCode.ToString();
+                tempsdkdata.Errordesc = request.Body.stkCallback.ResultDesc;
+
+                _context.TempSTKData.Update(tempsdkdata);
+                await _context.SaveChangesAsync();
+
                 //return unsuccesful to user
                 //log error
 
@@ -158,6 +167,7 @@ namespace TodoAPI.Controllers
                 PhoneNumber = long.Parse(request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("PhoneNumber")).Value.ToString()),
                 TransactionDate = request.Body.stkCallback.CallbackMetadata.Item.Find(r => r.Name.Equals("TransactionDate")).Value.ToString(),
                 TransactionDesc = tempitemtransxDesc,
+                Date = DateTime.Now,
             };
 
 

@@ -14,6 +14,7 @@
         public string? MpesaReceiptNumber { get; set; }   //            "MpesaReceiptNumber",
         public string? TransactionDate { get; set; }   //               "TransactionDate",
         public string? Name { get; set; }
+        public DateTime? Date { get; set; }
     }
 }
 

@@ -74,8 +74,8 @@ namespace TodoAPI.Controllers
         {
             Console.WriteLine("Reading from messaging QUEUE after saving to DB.    DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT");
 
-            //DELAY 1 MINUTE   USER TO EXECUTE PIN INPUT      B4 CONSUMING   QUEUE
-            await Task.Delay(60 * 1000);
+            //DELAY 1/2 MINUTE   USER TO EXECUTE PIN INPUT      B4 CONSUMING   QUEUE
+            await Task.Delay(30 * 1000);
 
             var response = await _rabbitMQConsumer.ConsumeMessageAsync(_encodedamtAcc, merchantID);
 
@@ -222,6 +222,7 @@ namespace TodoAPI.Controllers
                     PhoneNumber = PhoneNumber,
                     CallBackURL = CallBackURL,
                     TransactionDesc = TransactionDesc,
+                    Date = DateTime.Now,
                 };
 
                 _context.TempSTKData.Add(tempsdkdata);

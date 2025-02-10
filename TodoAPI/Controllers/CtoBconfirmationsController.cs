@@ -98,6 +98,7 @@ namespace TodoAPI.Controllers
                 BusinessShortCode = request.BusinessShortCode,
                 MSISDN  = request.MSISDN,
                 TransactionType = request.TransactionType,
+                Date = DateTime.Now,
             };
 
 

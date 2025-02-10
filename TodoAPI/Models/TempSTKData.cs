@@ -15,5 +15,11 @@
         //public string? AccountReference { get; set; }
         public string? TransactionDesc { get; set; }
         //public string? passkey { get; set; }
+
+        public string? Errorcode { get; set; }
+
+        public string? Errordesc { get; set; }
+
+        public DateTime? Date { get; set; } 
     }
 }

@@ -15,8 +15,9 @@
         public string? ThirdPartyTransID { get; set; } //    "ThirdPartyTransID": "",
         public string? MSISDN { get; set; }  //   "MSISDN":"25470****149",
         public string? FirstName { get; set; }   //     "FirstName":"John",
-        //public string? MiddleName { get; set; }   //   "MiddleName":""
-        //public string? LastName { get; set; }    //   "LastName":"Doe"
+                                                 //public string? MiddleName { get; set; }   //   "MiddleName":""
+                                                 //public string? LastName { get; set; }    //   "LastName":"Doe"
+        public DateTime? Date { get; set; }
 
     }
 }
