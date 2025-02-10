@@ -110,7 +110,7 @@ namespace TodoAPI.MessageBroker.Services
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
             var status = await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-            var status2 = await channel.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: true, arguments: null);
+            var status2 = await channel.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
             //if(status.MessageCount == 0)
 
 
