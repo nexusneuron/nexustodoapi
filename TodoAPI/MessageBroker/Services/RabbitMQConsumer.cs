@@ -110,7 +110,7 @@ namespace TodoAPI.MessageBroker.Services
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
             var status = await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-            var status2 = await channel.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            var status2 = await channel.QueueDeclareAsync(queue: merchantID, durable: false, exclusive: false, autoDelete: true, arguments: null);
             //if(status.MessageCount == 0)
 
 
@@ -133,13 +133,17 @@ namespace TodoAPI.MessageBroker.Services
                     var message = Encoding.UTF8.GetString(body);
 
 
+                    Console.WriteLine("//////////////////////////////////////////////////////        Channel 1 queue has Message");
+                    Console.WriteLine(message);
+
                     //Deserialize Classes
                     RootCallback requestCallback = JsonConvert.DeserializeObject<RootCallback>(message);
 
                     RootConfirmation requestConfirmation = JsonConvert.DeserializeObject<RootConfirmation>(message);
 
                     //Message is from Confirmation URL
-                    if (requestCallback.Body.stkCallback == null)
+                    //if (requestCallback.Body.stkCallback.ResultDesc == null)
+                    try
                     {
                         Console.WriteLine("//////////////////////////////////////////////////////");
                         Console.WriteLine("Message is from Confirmation URL");
@@ -148,12 +152,7 @@ namespace TodoAPI.MessageBroker.Services
                         Console.WriteLine(requestConfirmation.FirstName);
                         Console.WriteLine("//////////////////////////////////////////////////////");
 
-                        bool value = true;
 
-                        string value2 = message;
-                    }
-                    else
-                    {
                         Console.WriteLine("//////////////////////////////////////////////////////");
                         //Deserialized RootCallback Display this message only
                         Console.WriteLine("Message is from Callback URL");
@@ -163,6 +162,14 @@ namespace TodoAPI.MessageBroker.Services
                         bool value = true;
 
                         string value2 = message;
+                    }
+                    catch(Exception ex) 
+                    //catcelse
+                    {
+
+                        //bool value = true;
+
+                        //string value2 = message;
                     }
 
 
@@ -179,7 +186,7 @@ namespace TodoAPI.MessageBroker.Services
                 _callbackresponse.Message = value2;
                 _callbackresponse.value = value;
 
-                Console.WriteLine("//////////////////////////////////////////////////////");
+                Console.WriteLine("//////////////////////////////////////////////////////     block 0");
                 Console.WriteLine("//////////////////////////////////////////////////////" + " " + _callbackresponse.Message + "///////" + " " + _callbackresponse.value.ToString());
                 Console.WriteLine("//////////////////////////////////////////////////////");
 

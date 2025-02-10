@@ -163,7 +163,7 @@ namespace TodoAPI.Controllers
                 int amount = 1;
                 long partyA = 254717904391;
                 //string accNO = "CompanyXLTD";
-                string accNO = "NexuspayTwo";  //VALUE FROM INV/ORDERS TABLE
+                string accNO = "Nexuspay3";  //VALUE FROM INV/ORDERS TABLE
                 string TransTime = dateString;
                 int PartyB = 5142254;
                 long PhoneNumber = 254717904391;
