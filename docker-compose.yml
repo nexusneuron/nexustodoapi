@@ -4,15 +4,17 @@ services:
     build:
       context: .
       dockerfile: TodoAPI\Dockerfile
-    image: registry.ubuntudockerserver:5000/todoapi
+    image: registry.nexusneuron.com/todoapi
+    hostname: todoapi
+    container_name: todoapi
     restart: unless-stopped
     volumes:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
       #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
       #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
       #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
-    ports:
-      - '5001:8080'
+    #ports:
+      #- '5001:8080'
       #- '5001:8081'
       #- target: 8080
        # published: 5001
@@ -70,21 +72,319 @@ services:
               #if ($response.StatusCode -eq 200) { return 0} `
               #else {return 1}; `
              #} catch { return 1 }
+    networks:
+      -  nexus_nat
+      
+      
+  todoapireplica:
+    #image: ${DOCKER_REGISTRY-}todoapi
+    build:
+      context: .
+      dockerfile: TodoAPI\Dockerfile
+    image: registry.nexusneuron.com/todoapi
+    hostname: todoapireplica
+    container_name: todoapireplica
+    restart: unless-stopped
+    volumes:
+      - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
+    #ports:
+      #- '5002:8080'
+      #- '5001:8081'
+      #- target: 8080
+       # published: 5001
+        #mode: host
+        
+      #- target: 8080
+       # published: 5000
+      #- target: 8080
+      #  published: 5000
+      #- target: 8081
+      #  published: 5001
+        #protocol: tcp
+        #mode: ingress
+
+      #- name: web-secured
+      #  target: 443
+      #  host_ip: 127.0.0.1
+      #  published: "8083-9000"
+      #  protocol: tcp
+      #  app_protocol: https
+      #  mode: host
+    #environment:
+      #- VIRTUAL_HOST: my_domain.com
+      #- LETSENCRYPT_HOST: my_domain.com
+      #- LETSENCRYPT_EMAIL: my@email.com
+      #- VIRTUAL_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_EMAIL=nexus.neuron.io@gmail.com
+    #deploy:
+      #endpoint_mode: dnsrr
+      #placement:
+        #constraints: 
+          #- node.labels.type==windows
+      #replicas: 2
+      #update_config:
+        #parallelism: 1
+        #order: start-first
+        #failure_action: rollback
+        #delay: 10s
+      #rollback_config:
+        #parallelism: 0
+        #order: stop-first
+      #restart_policy:
+        #condition: any
+        #delay: 5s
+        #max_attempts: 3
+        #window: 120s
+    #healthcheck:
+       #interval: 5s
+       #timeout: 90s
+       #retries: 3
+       #test: CMD powershell -command `
+             #try { `
+              #$response = iwr http://localhost/ -UseBasicParsing; `
+              #if ($response.StatusCode -eq 200) { return 0} `
+              #else {return 1}; `
+             #} catch { return 1 }
+    networks:
+      -  nexus_nat
+      
+
+  todoapitwo:
+    #image: ${DOCKER_REGISTRY-}todoapi
+    build:
+      context: .
+      dockerfile: TodoAPI_Two\Dockerfile
+    image: registry.nexusneuron.com/todoapitwo
+    hostname: todoapitwo
+    container_name: todoapitwo
+    restart: unless-stopped
+    volumes:
+      - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
+    #ports:
+      #- '5003:8080'
+      #- '5001:8081'
+      #- target: 8080
+       # published: 5001
+        #mode: host
+        
+      #- target: 8080
+       # published: 5000
+      #- target: 8080
+      #  published: 5000
+      #- target: 8081
+      #  published: 5001
+        #protocol: tcp
+        #mode: ingress
+
+      #- name: web-secured
+      #  target: 443
+      #  host_ip: 127.0.0.1
+      #  published: "8083-9000"
+      #  protocol: tcp
+      #  app_protocol: https
+      #  mode: host
+    #environment:
+      #- VIRTUAL_HOST: my_domain.com
+      #- LETSENCRYPT_HOST: my_domain.com
+      #- LETSENCRYPT_EMAIL: my@email.com
+      #- VIRTUAL_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_EMAIL=nexus.neuron.io@gmail.com
+    #deploy:
+      #endpoint_mode: dnsrr
+      #placement:
+        #constraints: 
+          #- node.labels.type==windows
+      #replicas: 2
+      #update_config:
+        #parallelism: 1
+        #order: start-first
+        #failure_action: rollback
+        #delay: 10s
+      #rollback_config:
+        #parallelism: 0
+        #order: stop-first
+      #restart_policy:
+        #condition: any
+        #delay: 5s
+        #max_attempts: 3
+        #window: 120s
+    #healthcheck:
+       #interval: 5s
+       #timeout: 90s
+       #retries: 3
+       #test: CMD powershell -command `
+             #try { `
+              #$response = iwr http://localhost/ -UseBasicParsing; `
+              #if ($response.StatusCode -eq 200) { return 0} `
+              #else {return 1}; `
+             #} catch { return 1 }
+    networks:
+      -  nexus_nat
+
+
+  todoapitworeplica:
+    #image: ${DOCKER_REGISTRY-}todoapi
+    build:
+      context: .
+      dockerfile: TodoAPI_Two\Dockerfile
+    image: registry.nexusneuron.com/todoapitwo
+    hostname: todoapitworeplica
+    container_name: todoapitworeplica
+    restart: unless-stopped
+    volumes:
+      - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
+      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
+    #ports:
+      #- '5004:8080'
+      #- '5001:8081'
+      #- target: 8080
+       # published: 5001
+        #mode: host
+        
+      #- target: 8080
+       # published: 5000
+      #- target: 8080
+      #  published: 5000
+      #- target: 8081
+      #  published: 5001
+        #protocol: tcp
+        #mode: ingress
+
+      #- name: web-secured
+      #  target: 443
+      #  host_ip: 127.0.0.1
+      #  published: "8083-9000"
+      #  protocol: tcp
+      #  app_protocol: https
+      #  mode: host
+    #environment:
+      #- VIRTUAL_HOST: my_domain.com
+      #- LETSENCRYPT_HOST: my_domain.com
+      #- LETSENCRYPT_EMAIL: my@email.com
+      #- VIRTUAL_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_HOST=devhub.nexusneuron.com
+      #- LETSENCRYPT_EMAIL=nexus.neuron.io@gmail.com
+    #deploy:
+      #endpoint_mode: dnsrr
+      #placement:
+        #constraints: 
+          #- node.labels.type==windows
+      #replicas: 2
+      #update_config:
+        #parallelism: 1
+        #order: start-first
+        #failure_action: rollback
+        #delay: 10s
+      #rollback_config:
+        #parallelism: 0
+        #order: stop-first
+      #restart_policy:
+        #condition: any
+        #delay: 5s
+        #max_attempts: 3
+        #window: 120s
+    #healthcheck:
+       #interval: 5s
+       #timeout: 90s
+       #retries: 3
+       #test: CMD powershell -command `
+             #try { `
+              #$response = iwr http://localhost/ -UseBasicParsing; `
+              #if ($response.StatusCode -eq 200) { return 0} `
+              #else {return 1}; `
+             #} catch { return 1 }
+    networks:
+      -  nexus_nat
+      
+
+  #nginx:
+    #build: .\nginx
+    #hostname: nginx
+    #container_name: nginx
+    #image: registry.nexusneuron.com/nginx
+    #volumes:
+     #- C:\ProgramData\docker\volumes\nginxdata_vol\_data:c:\nginx\nginx-1.27.2\conf\
+     #- C:\ProgramData\docker\volumes\nginxlogs_vol\_data:c:\nginx\nginx-1.27.2\logs
+     #- C:\ProgramData\docker\volumes\nginxssl_vol\_data:c:\nginx\ssl
+     #- nginxdata_vol:c:\nginx\nginx-1.27.2\conf\
+     #- nginxdata_vol:c:\nginx\enabled-sites\html
+     #- nginxlogs_vol:c:\nginx\nginx-1.27.2\logs
+     #- nginxssl_vol:c:\nginx\ssl
+    #ports:
+      #- target: 443
+        #published: 443
+        #mode: host 
+        
+      #- target: 80
+        #published: 80
+        #mode: host        
+      #- '8080:8080'
+      #- '443:443'
+     #- target: 80
+     #  published: 80
+     #- target: 443
+     #  published: 443
+       #protocol: tcp
+       #mode: ingress   
+    #restart: always
+    
+    #deploy:
+     # placement:
+      #  constraints: 
+       #   - node.labels.type==windows
+    #  replicas: 2
+     # update_config:
+      #  parallelism: 1
+       # order: start-first
+        #failure_action: rollback
+        #delay: 10s
+     # rollback_config:
+      #  parallelism: 0
+       # order: stop-first
+    #  restart_policy:
+     #   condition: any
+      #  delay: 5s
+       # max_attempts: 10
+        #window: 300s
+    #healthcheck:
+     #  interval: 5s
+      # timeout: 300s
+       #retries: 3
+       #test: CMD powershell -command `
+    #         try { `
+     #         $response = iwr http://localhost/ -UseBasicParsing; `
+      #        if ($response.StatusCode -eq 200) { return 0} `
+       #       else {return 1}; `
+        #     } catch { return 1 }
     #networks:
     #  - nexus_overlay
+      #- nexus_nat
 
-#networks:
-  #nexus_overlay:
-    #name: nexus_overlay
-    #external: true
+networks:
+  nexus_nat:
+    name:  nexus_nat
+    external: true
     
 
 volumes:
-    nginxdata_vol:
-        name: nginxdata_vol
-        external: true
+    #nginxdata_vol:
+    #    name: nginxdata_vol
+    #    external: true
         
-    nginxssl_vol:
-        name: nginxssl_vol
-        external: true
-
+    #nginxssl_vol:
+    #    name: nginxssl_vol
+    #    external: true
+        
+    #nginxlogs_vol:
+    #    name: nginxlogs_vol
+    #    external: true    
