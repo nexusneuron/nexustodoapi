@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: TodoAPI\Dockerfile
-    image: registry.nexusneuron.com/todoapi
+    image: registry.nexusneuron.com:5000/todoapi
     hostname: todoapi
     container_name: todoapi
     restart: unless-stopped
@@ -81,7 +81,7 @@ services:
     build:
       context: .
       dockerfile: TodoAPI\Dockerfile
-    image: registry.nexusneuron.com/todoapi
+    image: registry.nexusneuron.com:5000/todoapi
     hostname: todoapireplica
     container_name: todoapireplica
     restart: unless-stopped
@@ -158,7 +158,7 @@ services:
     build:
       context: .
       dockerfile: TodoAPI_Two\Dockerfile
-    image: registry.nexusneuron.com/todoapitwo
+    image: registry.nexusneuron.com:5000/todoapitwo
     hostname: todoapitwo
     container_name: todoapitwo
     restart: unless-stopped
@@ -235,7 +235,7 @@ services:
     build:
       context: .
       dockerfile: TodoAPI_Two\Dockerfile
-    image: registry.nexusneuron.com/todoapitwo
+    image: registry.nexusneuron.com:5000/todoapitwo
     hostname: todoapitworeplica
     container_name: todoapitworeplica
     restart: unless-stopped
@@ -376,7 +376,7 @@ networks:
     external: true
     
 
-volumes:
+#volumes:
     #nginxdata_vol:
     #    name: nginxdata_vol
     #    external: true
