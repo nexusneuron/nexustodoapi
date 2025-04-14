@@ -12,7 +12,6 @@ services:
       - ${APPDATA}\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
       #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
       #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-chain.pem;
-      #- nginxssl_vol:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https\devhub.nexusneuron.com-key.pem;
     #ports:
       #- '5001:8080'
       #- '5001:8081'
