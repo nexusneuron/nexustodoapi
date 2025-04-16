@@ -5,7 +5,7 @@ page_type: sample
 languages:
 - csharp
 - xaml 
-products:
+products :
 - dotnet-maui
 urlFragment: webservices-rest
 ---
