@@ -4,7 +4,7 @@ description: This sample demonstrates a Todo list application where the data is 
 page_type: sample
 languages:
 - csharp
-- xaml
+- xaml 
 products:
 - dotnet-maui
 urlFragment: webservices-rest
