@@ -6,7 +6,7 @@ languages:
 - csharp
 - xaml
 products:
-- dotnet-maui
+- dotnet maui
 urlFragment: webservices-rest
 ---
 
