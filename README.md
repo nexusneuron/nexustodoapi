@@ -1,7 +1,7 @@
 ---
 name: .NET MAUI - Consume a REST-based web service
 description: This sample demonstrates a Todo list application where the data is stored and accessed from a REST-based web service.
-page_type: sample
+page type: sample
 languages:
 - csharp
 - xaml 
