@@ -105,8 +105,8 @@ jobs:
     - name: Tag the Docker image nexustodoapi_two
       run: docker tag todoapi_two ${{ vars.DOCKER_TAG }}/todoapi_two
 
-    - name: Push the Docker image nexustodoapi
-      run: docker push ${{ vars.DOCKER_TAG }}/todoapi:latest
+    #- name: Push the Docker image nexustodoapi
+    #  run: docker push ${{ vars.DOCKER_TAG }}/todoapi:latest
 
     - name: Push the Docker image nexustodoapi_two
       run: docker push ${{ vars.DOCKER_TAG }}/todoapi_two:latest
